@@ -1,34 +1,33 @@
-import os
+# gemini_api.py
 import requests
+import os
 
 
-class GeminiAPI:
-    def __init__(self, base_url: str):
-        """
-        Initialize the GeminiAPI instance with a base URL. The API key is read from the environment.
-        """
-        self.base_url = base_url
-        self.api_key = os.getenv("GEMINI_API_KEY")
-        if not self.api_key:
-            raise ValueError("API key not found. Please set the GEMINI_API_KEY environment variable.")
+def ask_gemini(question, api_key):
+    """
+    Sends a question to the Gemini API and returns the response.
 
-    def ask_question(self, question: str) -> str:
-        """
-        Sends a question to the Gemini API and returns the response.
-
-        :param question: The question to send to the API.
-        :return: The API's response as a string.
-        """
-        try:
-            headers = {
-                "Authorization": f"Bearer {self.api_key}",
-                "Content-Type": "application/json"
+    :param question: The question to send to Gemini.
+    :param api_key: Your API key for the Gemini service.
+    :return: The response content from Gemini.
+    """
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + api_key
+    headers = {
+        'Content-Type': 'application/json',
+    }
+    payload = {
+        "contents": [
+            {
+                "parts": [
+                    {"text": question}
+                ]
             }
-            payload = {
-                "question": question
-            }
-            response = requests.post(f"{self.base_url}/ask", json=payload, headers=headers)
-            response.raise_for_status()
-            return response.json().get("answer", "No answer provided by the API.")
-        except requests.exceptions.RequestException as e:
-            return f"An error occurred: {e}"
+        ]
+    }
+
+    try:
+        response = requests.post(url, json=payload, headers=headers)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        return {"error": str(e)}

@@ -1,22 +1,27 @@
-from gemini_api import GeminiAPI
+# main.py
+import os
+from gemini_api import ask_gemini
 
 
 def main():
-    # Initialize the Gemini API client
-    base_url = "https://api.gemini.example.com"  # Replace with the actual API base URL
-
-    try:
-        gemini_client = GeminiAPI(base_url)
-    except ValueError as e:
-        print(e)
+    # Get the API key from the environment variable
+    api_key = os.getenv("GEMINI_API_KEY")
+    if not api_key:
+        print("Error: GEMINI_API_KEY environment variable not set.")
         return
 
-    # Ask a question
-    question = input("Enter your question: ")
-    response = gemini_client.ask_question(question)
+    # Question to ask the Gemini API
+    question = "Say something in japanese and than the same thing in english"
+
+    # Get the response from Gemini API
+    response = ask_gemini(question, api_key)
 
     # Print the response
-    print("Gemini's Response:", response)
+    if "error" in response:
+        print("Error:", response["error"])
+    else:
+        print("Response from Gemini:")
+        print(response)
 
 
 if __name__ == "__main__":
