@@ -1,13 +1,13 @@
 # main.py
 import os
-from gemini_api import ask_gemini
+from util.gemini_api import ask_gemini
 
 
 def main():
     # Get the API key from the environment variable
-    api_key = os.getenv("GEMINI_API_KEY")
+    api_key = os.getenv("GEMINI_API")
     if not api_key:
-        print("Error: GEMINI_API_KEY environment variable not set.")
+        print("Error: GEMINI_API environment variable not set.")
         return
 
     # Question to ask the Gemini API

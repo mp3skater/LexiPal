@@ -1,0 +1,26 @@
+{
+    "languages": [
+        {"name": "English", "key": "en-US"},
+        {"name": "Spanish", "key": "es-ES"},
+        {"name": "French", "key": "fr-FR"},
+        {"name": "German", "key": "de-DE"},
+        {"name": "Italian", "key": "it-IT"},
+        {"name": "Portuguese", "key": "pt-BR"},
+        {"name": "Russian", "key": "ru-RU"},
+        {"name": "Chinese", "key": "zh-CN"},
+        {"name": "Japanese", "key": "ja-JP"},
+        {"name": "Korean", "key": "ko-KR"},
+        {"name": "Arabic", "key": "ar-SA"},
+        {"name": "Hindi", "key": "hi-IN"},
+        {"name": "Dutch", "key": "nl-NL"},
+        {"name": "Swedish", "key": "sv-SE"},
+        {"name": "Turkish", "key": "tr-TR"},
+        {"name": "Polish", "key": "pl-PL"},
+        {"name": "Greek", "key": "el-GR"},
+        {"name": "Vietnamese", "key": "vi-VN"},
+        {"name": "Thai", "key": "th-TH"},
+        {"name": "Hebrew", "key": "he-IL"},
+        {"name": "Indonesian", "key": "id-ID"},
+        {"name": "Hungarian", "key": "hu-HU"}
+    ]
+}
