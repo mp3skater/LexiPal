@@ -1,6 +1,6 @@
 # main.py
 import os
-from util.gemini_api import ask_gemini
+from utils.gemini_api import ask_gemini
 
 
 def main():
