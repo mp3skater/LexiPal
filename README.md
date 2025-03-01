@@ -1,0 +1,52 @@
+# LexiPal
+
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
+
+**LexiPal** is an AI Language Partner designed to help you learn a new language by conversing with the character of your choice. Whether you're a beginner or looking to improve your fluency, LexiPal provides an interactive and engaging way to practice and enhance your language skills.
+
+## Features
+
+- **AI-Powered Conversations**: Engage in realistic conversations powered by advanced AI.
+- **Multiple Language Support**: Learn various languages including Spanish, French, German, and more.
+- **Customizable Characters**: Choose and customize your language partner to make learning more fun.
+- **Progress Tracking**: Keep track of your learning progress and milestones.
+- **Interactive Exercises**: Participate in exercises designed to improve vocabulary, grammar, and pronunciation.
+
+## Installation
+
+To install LexiPal, clone the repository and install the necessary dependencies:
+
+```bash
+git clone https://github.com/mp3skater/LexiPal.git
+cd LexiPal
+pip install -r requirements.txt
+```
+
+## Usage
+
+To start using LexiPal, run the following command:
+
+```bash
+python main.py
+```
+
+Follow the on-screen instructions to begin your language learning journey.
+
+## Contributing
+
+We welcome contributions from the community! If you'd like to contribute, please fork the repository and submit a pull request. For major changes, please open an issue first to discuss what you would like to change.
+
+## Contributors
+
+A big thank you to all our contributors:
+
+- [mp3skater](https://github.com/mp3skater)
+- [23Benji](https://github.com/23Benji)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For any questions or suggestions, feel free to open an issue or contact us at [mp3skater](https://github.com/mp3skater).
