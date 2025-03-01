@@ -1,4 +1,4 @@
-from utils.gemini_api import ask_gemini
+from utils.llm_api.gemini_api.gemini_api import ask_gemini
 import re
 
 
@@ -14,7 +14,13 @@ def format_prompt(questions: list[str]) -> str:
 def ask_questions(questions: list[str], api_key: str) -> tuple[list[str], str]:
     prompt = format_prompt(questions)
     response = ask_gemini(prompt, api_key)
-    return extract_answers(response, len(questions)), response
+    answers = extract_answers(response, len(questions))
+
+    if len(answers) != len(questions):
+        print(f"⚠️ Answer count mismatch. Expected {len(questions)}, got {len(answers)}")
+        print(f"Raw response: {response}")
+
+    return answers, response
 
 
 def extract_answers(response: str, expected_answers: int) -> list[str]:

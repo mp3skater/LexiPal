@@ -1,7 +1,6 @@
 import os
 import pytest
-import re
-from utils.question_handler import ask_questions
+from utils.llm_api.questions_handler.question_handler import ask_questions
 
 API_KEY = os.getenv("GEMINI_API")
 

@@ -2,3 +2,4 @@ requests~=2.32.3
 SpeechRecognition~=3.14.0
 google_cloud_speech~=2.30.0
 pytest~=8.3.4
+scikit-learn~=1.6.1
