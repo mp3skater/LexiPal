@@ -1,14 +1,21 @@
-# LexiPal
+<p align="center">
+    <img src="https://github.com/mp3skater/LexiPal/blob/1ea42bdfde93de2748b52bac13a9c4b961deed4d/res/images/logo.svg" align="center" width="40%">
+</p>
+
+---
 
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 **LexiPal** is an AI Language Partner designed to help you learn a new language by conversing with the character of your choice. Whether you're a beginner or looking to improve your fluency, LexiPal provides an interactive and engaging way to practice and enhance your language skills.
 
-## Features
+## Prototype Features
 
 - **AI-Powered Conversations**: Engage in realistic conversations powered by advanced AI.
-- **Multiple Language Support**: Learn various languages including Spanish, French, German, and more.
+- **100% Free Prototype**: Experience a absolutely free Virtual Language Partner.
+- **Multiple Language Support**: Learn various languages including Spanish, French, German, English, Japanese and much more.
 - **Customizable Characters**: Choose and customize your language partner to make learning more fun.
+
+### Future Features
 - **Progress Tracking**: Keep track of your learning progress and milestones.
 - **Interactive Exercises**: Participate in exercises designed to improve vocabulary, grammar, and pronunciation.
 
@@ -36,9 +43,7 @@ Follow the on-screen instructions to begin your language learning journey.
 
 We welcome contributions from the community! If you'd like to contribute, please fork the repository and submit a pull request. For major changes, please open an issue first to discuss what you would like to change.
 
-## Contributors
-
-A big thank you to all our contributors:
+## The LexiPal Team
 
 - [mp3skater](https://github.com/mp3skater)
 - [23Benji](https://github.com/23Benji)
