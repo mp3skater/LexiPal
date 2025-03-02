@@ -1,34 +1,23 @@
 import re
 from typing import List, Dict, Tuple
 
-from utils.llm_api.gemini_api.gemini_api import ask_gemini
+from utils.llm_api.gemini_api.gemini_api import ask_gemini  # Ensure this import is correct
 
 
 def _extract_prompt_from_response(text: str) -> str:
-    """Extract prompt from XML-like tags."""
+    """Extract prompt from XML-like tags with robust fallback."""
     match = re.search(r"<PROMPT>(.*?)</PROMPT>", text, re.DOTALL)
     return match.group(1).strip() if match else text.strip()
 
 
 def _extract_score_from_response(text: str) -> float:
-    match = re.search(r"(\d+\.?\d*)", text)
-    if match:
-        return min(max(float(match.group(1)), 0.0), 10.0)
-    return 0.0
+    """Extract score with XML tag priority and numerical fallback."""
+    score_match = re.search(r"<SCORE>(.*?)</SCORE>", text, re.DOTALL)
+    if score_match:
+        text = score_match.group(1)
+    num_match = re.search(r"(\d+\.?\d*)", text)
 
-
-def _create_evaluation_prompt_for_single_criterion(criterion: Dict, response: str, prompt: str) -> str:
-    return f"""
-    Evaluate how well the following response meets the criterion '{criterion['name']}':
-    Criterion description: {criterion['description']}
-
-    Original prompt: {prompt}
-    Generated response: {response}
-
-    Provide a numerical score between 0-10 with 1 decimal place. 
-    Consider both the response quality and relevance to the original prompt.
-    Respond only with the numerical score.
-    """
+    return min(max(float(num_match.group(1)), 0.0) if num_match else 0.0, 10.0)
 
 
 class PromptOptimizer:
@@ -46,52 +35,58 @@ class PromptOptimizer:
         best_prompt = current_prompt
 
         for iteration in range(self.max_iterations):
+            # Generate response from current prompt
             response = ask_gemini(current_prompt, self.api_key)
 
-            score = self._evaluate_response_score(response, current_prompt)
+            # Get combined evaluation and improvement
+            score, new_prompt = self._evaluate_and_improve(current_prompt, response)
             self.score_history.append(score)
 
-            if score >= self.score_threshold:
-                break
-
+            # Update best results if current is better
             if score > best_score:
                 best_score = score
                 best_prompt = current_prompt
 
-            current_prompt = self._generate_improved_prompt(current_prompt, score)
+            # Early stopping condition
+            if score >= self.score_threshold:
+                break
+
+            current_prompt = new_prompt
 
         return best_prompt, best_score
 
-    def _evaluate_response_score(self, response: str, prompt: str) -> float:
-        total_score = 0.0
+    def _evaluate_and_improve(self, current_prompt: str, response: str) -> Tuple[float, str]:
+        """Combined evaluation and improvement in one API call."""
+        criteria_formatted = "\n".join(
+            f"- {c['name']} (Weight: {c.get('weight', 1.0)}): {c['description']}"
+            for c in self.criteria
+        )
 
-        for criterion in self.criteria:
-            eval_prompt = _create_evaluation_prompt_for_single_criterion(criterion, response, prompt)
-            eval_response = ask_gemini(eval_prompt, self.api_key)
-            score = _extract_score_from_response(eval_response)
-            weighted_score = score * criterion.get('weight', 1.0)
-            total_score += weighted_score
+        evaluation_prompt = f"""
+        Analyze this prompt-response pair and provide both a score and improved prompt:
 
-        sum_weights = sum(c.get('weight', 1.0) for c in self.criteria)
-        return total_score / sum_weights
+        [Original Prompt]
+        {current_prompt}
 
-    def _generate_improved_prompt(self, current_prompt: str, current_score: float) -> str:
-        improvement_prompt = f"""
-        The current prompt: "{current_prompt}"
-        Received an overall score of {current_score:.1f}/10 based on these criteria:
-        {self._format_criteria_for_feedback()}
+        [Generated Response]
+        {response}
 
-        Generate an improved prompt that would:
-        1. Better address all the evaluation criteria
-        2. Maintain clarity and focus
-        3. Potentially yield higher-quality responses
+        [Evaluation Criteria]
+        {criteria_formatted}
 
-        Provide only the new improved prompt between <PROMPT></PROMPT> tags.
+        Perform these tasks:
+        1. Evaluate response quality against criteria using weighted average
+        2. Score between 0-10 (considering all criteria weights)
+        3. Create improved prompt addressing weaknesses
+        4. Format strictly as:
+           <SCORE>score</SCORE>
+           <PROMPT>improved_prompt</PROMPT>
+
+        Provide only the XML-formatted response.
         """
 
-        improvement_response = ask_gemini(improvement_prompt, self.api_key)
-        return _extract_prompt_from_response(improvement_response)
-
-    def _format_criteria_for_feedback(self) -> str:
-        return "\n".join([f"- {c['name']} (weight {c['weight']}): {c['description']}"
-                          for c in self.criteria])
+        api_response = ask_gemini(evaluation_prompt, self.api_key)
+        return (
+            _extract_score_from_response(api_response),
+            _extract_prompt_from_response(api_response)
+        )

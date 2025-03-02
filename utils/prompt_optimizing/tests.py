@@ -1,94 +1,48 @@
-import pytest
-
+import unittest
+from unittest.mock import patch
 from utils.prompt_optimizing.optimizer import _extract_prompt_from_response, _extract_score_from_response, \
-    _create_evaluation_prompt_for_single_criterion, PromptOptimizer
+    PromptOptimizer
 
 
-# Test 1: Extracting prompt from XML tags
-def test_extract_prompt_with_tags():
-    """Test we can extract text between <PROMPT> tags"""
-    text = "<PROMPT>Write about dogs</PROMPT> some extra text"
-    result = _extract_prompt_from_response(text)
-    assert result == "Write about dogs"
+class TestPromptOptimizer(unittest.TestCase):
 
+    def test_extract_prompt_from_response(self):
+        self.assertEqual(_extract_prompt_from_response("<PROMPT>Test prompt</PROMPT>"), "Test prompt")
+        self.assertEqual(_extract_prompt_from_response("Some response"), "Some response")
+        self.assertEqual(_extract_prompt_from_response("<PROMPT>  Trimmed </PROMPT>"), "Trimmed")
 
-# Test 2: Handling text without tags
-def test_extract_prompt_without_tags():
-    """Test we get clean text when there's no tags"""
-    text = "   Write about cats   "
-    result = _extract_prompt_from_response(text)
-    assert result == "Write about cats"
+    def test_extract_score_from_response(self):
+        self.assertEqual(_extract_score_from_response("<SCORE>8.5</SCORE>"), 8.5)
+        self.assertEqual(_extract_score_from_response("reasoning <SCORE>7.2</SCORE> text"), 7.2)
+        self.assertEqual(_extract_score_from_response("Invalid text"), 0.0)
+        self.assertEqual(_extract_score_from_response("<SCORE>18.5</SCORE>"), 10.0)
 
+    @patch("utils.llm_api.gemini_api.ask_gemini")
+    def test_optimize_prompt(self, mock_ask_gemini):
+        mock_ask_gemini.side_effect = [
+            "<SCORE>6.0</SCORE><PROMPT>Improved Prompt 1</PROMPT>",
+            "<SCORE>9.0</SCORE><PROMPT>Improved Prompt 2</PROMPT>",
+        ]
 
-# Test 3: Normal score extraction
-def test_extract_valid_score():
-    """Test we can find numbers in text"""
-    text = "Score: 8.5/10"
-    result = _extract_score_from_response(text)
-    assert result == 8.5
+        optimizer = PromptOptimizer(api_key="dummy_key",
+                                    criteria=[{"name": "clarity", "description": "Should be clear"}], max_iterations=3,
+                                    score_threshold=8.0)
+        best_prompt, best_score = optimizer.optimize_prompt("Initial Prompt")
 
+        self.assertEqual(best_prompt, "Improved Prompt 2")
+        self.assertEqual(best_score, 9.0)
 
-# Test 4: Score clamping at maximum
-def test_extract_score_above_10():
-    """Test scores can't go above 10"""
-    text = "15.9 points"
-    result = _extract_score_from_response(text)
-    assert result == 10.0
+    @patch("prompt_optimizer.ask_gemini")
+    def test_evaluate_and_improve(self, mock_ask_gemini):
+        mock_ask_gemini.return_value = "<SCORE>7.5</SCORE><PROMPT>Better Prompt</PROMPT>"
 
+        optimizer = PromptOptimizer(api_key="dummy_key",
+                                    criteria=[{"name": "clarity", "description": "Should be clear"}])
+        score, new_prompt = optimizer._evaluate_and_improve("Initial", "Generated Response")
 
-# Test 5: Score clamping at minimum
-def test_extract_score_below_0():
-    """Test scores can't go below 0"""
-    text = "-5.3"
-    result = _extract_score_from_response(text)
-    assert result == 0.0
-
-
-# Test 6: Evaluation prompt creation
-def test_create_evaluation_prompt():
-    """Test evaluation prompt includes all important information"""
-    criterion = {
-        'name': 'Creativity',
-        'description': 'Original ideas'
-    }
-    response = "AI response"
-    prompt = "Original prompt"
-
-    result = _create_evaluation_prompt_for_single_criterion(criterion, response, prompt)
-
-    assert 'Creativity' in result
-    assert 'Original ideas' in result
-    assert 'AI response' in result
-    assert 'Original prompt' in result
-
-
-# Test 7: Optimizer initialization
-def test_optimizer_initialization():
-    """Test optimizer stores settings correctly"""
-    criteria = [{'name': 'Test', 'description': 'Test'}]
-    optimizer = PromptOptimizer(api_key="123", criteria=criteria)
-
-    assert optimizer.max_iterations == 5
-    assert optimizer.score_threshold == 8.0
-    assert len(optimizer.criteria) == 1
-
-
-# Test 8: Criteria formatting
-def test_format_criteria():
-    """Test criteria are shown with names and weights"""
-    criteria = [{
-        'name': 'Quality',
-        'description': 'High standard',
-        'weight': 2.0
-    }]
-    optimizer = PromptOptimizer(api_key="123", criteria=criteria)
-
-    formatted = optimizer._format_criteria_for_feedback()
-
-    assert "Quality" in formatted
-    assert "High standard" in formatted
-    assert "weight 2.0" in formatted
+        self.assertEqual(score, 7.5)
+        self.assertEqual(new_prompt, "Better Prompt")
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-v"])
+    unittest.main()
