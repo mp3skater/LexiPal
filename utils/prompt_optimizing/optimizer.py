@@ -33,12 +33,11 @@ def _create_evaluation_prompt_for_single_criterion(criterion: Dict, response: st
 
 class PromptOptimizer:
     def __init__(self, api_key: str, criteria: List[Dict], max_iterations: int = 5,
-                 score_threshold: float = 8.0, temperature: float = 0.5):
+                 score_threshold: float = 8.0):
         self.api_key = api_key
         self.criteria = criteria
         self.max_iterations = max_iterations
         self.score_threshold = score_threshold
-        self.temperature = temperature
         self.score_history = []
 
     def optimize_prompt(self, initial_prompt: str) -> Tuple[str, float]:
