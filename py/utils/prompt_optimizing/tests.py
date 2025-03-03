@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch
-from utils.prompt_optimizing.optimizer import _extract_prompt_from_response, _extract_score_from_response, \
+from py.utils.prompt_optimizing import _extract_prompt_from_response, _extract_score_from_response, \
     PromptOptimizer
 
 

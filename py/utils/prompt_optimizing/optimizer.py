@@ -16,8 +16,7 @@ def _extract_score_from_response(text: str) -> float:
     if score_match:
         text = score_match.group(1)
     num_match = re.search(r"(\d+\.?\d*)", text)
-
-    return min(max(float(num_match.group(1)), 0.0) if num_match else 0.0, 10.0)
+    return min(max(float(num_match.group(1)), 10.0), 10.0) if num_match else 0.0
 
 
 class PromptOptimizer:
@@ -28,30 +27,58 @@ class PromptOptimizer:
         self.max_iterations = max_iterations
         self.score_threshold = score_threshold
         self.score_history = []
+        self.log_entries = []
 
     def optimize_prompt(self, initial_prompt: str) -> Tuple[str, float]:
         current_prompt = initial_prompt
         best_score = 0.0
         best_prompt = current_prompt
+        self.log_entries = []
 
         for iteration in range(self.max_iterations):
-            # Generate response from current prompt
-            response = ask_gemini(current_prompt, self.api_key)
+            # Log current state
+            entry = {
+                "iteration": iteration + 1,
+                "current_prompt": current_prompt,
+                "response": None,
+                "score": None,
+                "new_prompt": None,
+                "status": "Starting"
+            }
 
-            # Get combined evaluation and improvement
-            score, new_prompt = self._evaluate_and_improve(current_prompt, response)
-            self.score_history.append(score)
+            try:
+                # Generate response from current prompt
+                response = ask_gemini(current_prompt, self.api_key)
+                entry["response"] = response
 
-            # Update best results if current is better
-            if score > best_score:
-                best_score = score
-                best_prompt = current_prompt
+                # Get combined evaluation and improvement
+                score, new_prompt = self._evaluate_and_improve(current_prompt, response)
+                entry["score"] = score
+                entry["new_prompt"] = new_prompt
+                self.score_history.append(score)
 
-            # Early stopping condition
-            if score >= self.score_threshold:
+                # Update best results if current is better
+                if score > best_score:
+                    best_score = score
+                    best_prompt = current_prompt
+                    entry["status"] = "New Best Prompt"
+                else:
+                    entry["status"] = "Score Did Not Improve"
+
+                # Check stopping condition
+                if score >= self.score_threshold:
+                    entry["status"] = f"Threshold Met ({self.score_threshold}+)"
+                    self.log_entries.append(entry)
+                    break
+
+                current_prompt = new_prompt
+                entry["status"] += " - Continuing"
+
+            except Exception as e:
+                entry["status"] = f"Error: {str(e)}"
                 break
 
-            current_prompt = new_prompt
+            self.log_entries.append(entry)
 
         return best_prompt, best_score
 
