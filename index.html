@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>LexiPal Prototype</title>
+    <script src="libs/brython.js"></script>
+    <script src="libs/brython_stdlib.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body onload="brython()" class="bg-gray-100 min-h-screen p-4">
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-4">
+        <!-- Chat History -->
+        <div id="chat_history" class="h-96 overflow-y-auto mb-4 space-y-2">
+            <div class="ai-msg bg-gray-100 p-3 rounded">Hello! I'm LexiPal. How can I help you today?</div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="flex gap-2">
+            <textarea
+                id="user_input"
+                class="flex-1 p-2 border rounded"
+                placeholder="Type your message..."
+                rows="2"
+            ></textarea>
+            <button
+                id="send_btn"
+                class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            >Send</button>
+        </div>
+    </div>
+
+<script type="text/python">
+from browser import document, html, alert
+import json
+# import requests  # Keep imports for future use
+
+# Configuration (commented out for now)
+# GEMINI_API_KEY = "YOUR_API_KEY_HERE"
+# API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={GEMINI_API_KEY}"
+
+def create_message_element(text, is_user=False):
+    """Create styled chat message elements"""
+    div = html.DIV(Class="ai-msg bg-gray-100 p-3 rounded")
+    if is_user:
+        div.className = "user-msg bg-blue-100 p-3 rounded ml-8"
+    div.text = f"You: {text}" if is_user else f"LexiPal: {text}"
+    return div
+
+def handle_gemini_response(user_input, response):
+    """Process dummy response"""
+    try:
+        # Simulate processing real response
+        gemini_text = f"Dummy response to: {user_input}"
+        display_message(user_input, gemini_text)
+
+    except Exception as e:
+        alert(f"Error processing response: {str(e)}")
+
+def display_message(user_input, ai_response):
+    """Add messages to chat history (unchanged)"""
+    chat_div = document["chat_history"]
+    chat_div <= create_message_element(user_input, is_user=True)
+    chat_div <= create_message_element(ai_response)
+    document["user_input"].value = ""
+    chat_div.scrollTop = chat_div.scrollHeight
+
+def send_to_gemini(event):
+    """Handle message sending with dummy responses"""
+    user_input = document["user_input"].value.strip()
+    if not user_input:
+        alert("Please enter a message!")
+        return
+
+    try:
+        # Show loading state
+        btn = document["send_btn"]
+        btn.text = "Sending..."
+        btn.classList.add("opacity-50", "cursor-not-allowed")
+
+        # Simulate API delay using JavaScript setTimeout
+        def dummy_delay():
+            handle_gemini_response(user_input, None)
+            btn.text = "Send"
+            btn.classList.remove("opacity-50", "cursor-not-allowed")
+
+        # Use window.setTimeout through Brython's interface
+        window.setTimeout(dummy_delay, 500)
+
+    except Exception as e:
+        alert(f"Error: {str(e)}")
+
+# Keep existing event listeners
+document["send_btn"].bind("click", send_to_gemini)
+
+def handle_keypress(event):
+    if event.key == "Enter" and not event.shiftKey:
+        event.preventDefault()
+        send_to_gemini(None)
+
+document["user_input"].bind("keypress", handle_keypress)
+</script>
+</body>
+</html>

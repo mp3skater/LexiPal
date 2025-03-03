@@ -1,0 +1,11 @@
+/* Custom scrollbar for the chat history */
+#chat_history::-webkit-scrollbar {
+    width: 6px;
+}
+#chat_history::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+#chat_history::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
+}
