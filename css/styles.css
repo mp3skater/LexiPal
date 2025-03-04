@@ -1,11 +1,30 @@
-/* Custom scrollbar */
+/* Custom styles */
+.message {
+    max-width: 80%;
+    padding: 1rem;
+    border-radius: 1rem;
+    word-wrap: break-word;
+}
+
+.user-message {
+    background-color: #3b82f6;
+    color: white;
+    margin-left: auto;
+}
+
+.bot-message {
+    background-color: #e5e7eb;
+    color: #1f2937;
+    margin-right: auto;
+}
+
+/* Scrollbar styling */
 ::-webkit-scrollbar {
     width: 8px;
 }
 
 ::-webkit-scrollbar-track {
     background: #f1f1f1;
-    border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -15,20 +34,4 @@
 
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
-}
-
-/* Animation for messages */
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.flex.items-start.gap-2 {
-    animation: slideIn 0.3s ease-out;
 }
