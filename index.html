@@ -77,14 +77,7 @@ def send_to_gemini(event):
         btn.text = "Sending..."
         btn.classList.add("opacity-50", "cursor-not-allowed")
 
-        # Simulate API delay using JavaScript setTimeout
-        def dummy_delay():
-            handle_gemini_response(user_input, None)
-            btn.text = "Send"
-            btn.classList.remove("opacity-50", "cursor-not-allowed")
-
-        # Use window.setTimeout through Brython's interface
-        window.setTimeout(dummy_delay, 500)
+        btn.classList.remove("opacity-50", "cursor-not-allowed")
 
     except Exception as e:
         alert(f"Error: {str(e)}")
