@@ -1,6 +1,6 @@
 import requests
 from typing import List, Dict
-from utils.llm_api.llm_client.base_llm import BaseLLMClient
+from app.utils.llm_api.llm_client.base_llm import BaseLLMClient
 
 
 class GeminiClient(BaseLLMClient):

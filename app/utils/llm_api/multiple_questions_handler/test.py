@@ -1,6 +1,6 @@
 import os
 import pytest
-from utils.llm_api.multiple_questions_handler.question_handler import ask_questions
+from app.utils.llm_api import ask_questions
 
 API_KEY = os.getenv("GEMINI_API")
 

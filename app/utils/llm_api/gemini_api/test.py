@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, Mock
-from py.utils.llm_api.gemini_api.gemini_api import ask_gemini
+from app.utils.llm_api.gemini_api.gemini_api import ask_gemini
 import requests
 import os
 

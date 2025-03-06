@@ -1,4 +1,4 @@
-from py.utils.prompt_optimizing.optimizer import PromptOptimizer
+from app.utils.prompt_optimizing.optimizer import PromptOptimizer
 
 
 def main():

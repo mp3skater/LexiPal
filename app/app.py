@@ -1,13 +1,11 @@
-import os
-
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-from py.utils.llm_api.gemini_api.gemini_api import ask_gemini  # Import your custom function
+from app.utils.llm_api.gemini_api.gemini_api import ask_gemini  # Import your custom function
 
 app = Flask(__name__)
 CORS(app)
 
-GOOGLE_API_KEY = os.getenv("GEMINI_API")
+GOOGLE_API_KEY = "AIzaSyDv_ybEhpBuUu76uxDKuH9KsW0yp_VR5qQ"
 
 
 @app.route('/')
@@ -25,7 +23,7 @@ def chat():
             return jsonify({'response': 'Please provide a message'}), 400
 
         # Use your custom function instead of the official SDK
-        response = ask_gemini("explain ai", GOOGLE_API_KEY)
+        response = ask_gemini(user_message, GOOGLE_API_KEY)
 
         # Handle error responses from your custom function
         if response == "ERROR":

@@ -1,7 +1,7 @@
 import re
 from typing import List, Dict, Tuple
 
-from py.utils.llm_api.gemini_api.gemini_api import ask_gemini  # Ensure this import is correct
+from app.utils.llm_api.gemini_api.gemini_api import ask_gemini  # Ensure this import is correct
 
 
 def _extract_prompt_from_response(text: str) -> str:
