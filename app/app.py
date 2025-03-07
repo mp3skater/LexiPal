@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
-from app.utils.llm_api.gemini_api.gemini_api import ask_gemini  # Import your custom function
+from utils.llm_api.gemini_api.gemini_api import ask_gemini  # Import your custom function
 
 app = Flask(__name__)
 CORS(app)
