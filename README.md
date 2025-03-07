@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://github.com/mp3skater/LexiPal/blob/1ea42bdfde93de2748b52bac13a9c4b961deed4d/res/images/logo.svg" align="center" width="40%">
+    <img src="static/images/logo.svg" align="center" width="40%">
 </p>
 
 ---
