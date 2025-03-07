@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from utils.llm_api.gemini_api.gemini_api import ask_gemini  # Import your custom function
@@ -5,7 +6,7 @@ from utils.llm_api.gemini_api.gemini_api import ask_gemini  # Import your custom
 app = Flask(__name__)
 CORS(app)
 
-GOOGLE_API_KEY = "AIzaSyDv_ybEhpBuUu76uxDKuH9KsW0yp_VR5qQ"
+GOOGLE_API_KEY = os.getenv("GEMINI_API")
 
 
 @app.route('/')
