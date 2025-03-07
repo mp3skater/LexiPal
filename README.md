@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="static/images/logo.svg" align="center" width="40%">
+    <img src="app/static/images/logo.svg" align="center" width="40%">
     <h1 align="center">LexiPal</h1>
 </div>
 
