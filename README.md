@@ -40,14 +40,14 @@ To start using LexiPal, run the following commands:
 
 ```bash
 export GEMINI_API=YOUR_API_KEY
-python3 main.py
+python3 app/app.py
 ```
 
 ### Windows
 
 ```bash
 set GEMINI_API=YOUR_API_KEY
-python main.py 
+python app/app.py 
 ```
 
 Follow the on-screen instructions to begin your language learning journey.
