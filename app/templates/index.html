@@ -25,10 +25,10 @@
             <div class="p-4 border-t">
                 <form id="chat-form" class="flex gap-2">
                     <input type="text" id="user-input"
-                           class="flex-1 border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           class="flex-1 border rounded-lg p-2 fous:outline-none focus:ring-2 focus:ring-blue-500"
                            placeholder="Type your message...">
-                    <button type="submit"
-                            class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                    <button type="submit" id="send-button"
+                            class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
                         Send
                     </button>
                 </form>
@@ -36,6 +36,7 @@
         </div>
     </div>
 
+    <script src=""></script>
     <script>
         const chatForm = document.getElementById('chat-form');
         const userInput = document.getElementById('user-input');
@@ -76,5 +77,7 @@
 
         chatForm.addEventListener('submit', handleSubmit);
     </script>
+    <!-- At the bottom of your body, replace the old script with -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>

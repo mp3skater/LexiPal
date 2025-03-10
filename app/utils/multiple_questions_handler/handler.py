@@ -1,4 +1,4 @@
-from app.utils.llm_api.gemini_api.gemini_api import ask_gemini
+from utils.llm_api.gemini_api.gemini_api import ask_gemini
 import re
 
 

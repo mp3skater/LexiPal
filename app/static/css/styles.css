@@ -7,15 +7,19 @@
 }
 
 .user-message {
-    background-color: #3b82f6;
+    background-color: #2f7f33;
     color: white;
     margin-left: auto;
 }
 
 .bot-message {
-    background-color: #e5e7eb;
-    color: #1f2937;
+    background-color: #93f661;
+    color: #000000;
     margin-right: auto;
+}
+
+.send-button {
+    background-color: #2f7f33;
 }
 
 /* Scrollbar styling */
