@@ -1,65 +1,48 @@
+let isChatInitialized = false;
+
 document.addEventListener('DOMContentLoaded', () => {
-    const chatForm = document.getElementById('chat-form');
-    const userInput = document.getElementById('user-input');
-    const chatMessages = document.getElementById('chat-messages');
-    let currentPersona = 'AI Assistant';
-
-    // Initialize chat when page loads
-    initializeChat();
-
-    async function initializeChat() {
-        try {
-            const response = await fetch('/start', {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            const data = await response.json();
-            currentPersona = data.persona || 'AI Assistant';
-            addMessage(data.response, 'bot', currentPersona);
-        } catch (error) {
-            addMessage('Error starting chat session', 'bot', currentPersona);
-        }
-    }
-
-    async function handleSubmit(e) {
-        e.preventDefault();
-        const message = userInput.value.trim();
-        if (!message) return;
-
-        addMessage(message, 'user');
-        userInput.value = '';
-
-        try {
-            const response = await fetch('/chat', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({ message }),
-            });
-
-            const data = await response.json();
-            currentPersona = data.persona || currentPersona;
-            addMessage(data.response, 'bot', currentPersona);
-        } catch (error) {
-            addMessage('Error communicating with server', 'bot', currentPersona);
-        }
-    }
-
-    function addMessage(text, sender, persona = null) {
-        const messageDiv = document.createElement('div');
-        messageDiv.className = `message ${sender}-message p-4 mb-4 rounded-lg`;
-        messageDiv.innerHTML = `
-            <div class="font-bold text-sm mb-1">${sender === 'bot' ? persona : 'You'}</div>
-            <div class="text-gray-800">${text}</div>
-        `;
-        chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    chatForm.addEventListener('submit', handleSubmit);
+    // Show initial fixed message
+    addSystemMessage("With who, in what language and about what would you like to talk about?");
 });
+
+async function handleSubmit(e) {
+    e.preventDefault();
+    const message = userInput.value.trim();
+    if (!message) return;
+
+    addMessage(message, 'user');
+    userInput.value = '';
+
+    try {
+        const endpoint = isChatInitialized ? '/chat' : '/start';
+        const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            credentials: 'include',
+            body: JSON.stringify({ message })
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.response);
+        }
+
+        const data = await response.json();
+        
+        if (!isChatInitialized) {
+            isChatInitialized = true;
+        }
+
+        addMessage(data.response, 'bot', data.persona);
+
+    } catch (error) {
+        addMessage(error.message || 'Communication error', 'error');
+    }
+}
+
+function addSystemMessage(text) {
+    const div = document.createElement('div');
+    div.className = 'system-message bg-yellow-100 p-3 rounded mb-4';
+    div.textContent = text;
+    chatMessages.appendChild(div);
+}

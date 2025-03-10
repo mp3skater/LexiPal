@@ -19,31 +19,34 @@ def home():
 def start_chat():
     try:
         session.clear()
+        data = request.json
+        user_input = data.get('message', '').strip()
 
-        # Generate chat context using your method
+        if not user_input:
+            return jsonify({'response': 'Please specify who, language, and topic'}), 400
+
+        # Generate chat context based on user's initial input
         setup_questions = [
-            "Create a 1-3 word long name for who the AI will interpret",
-            "Create a short starting message (1-2 sentences)",
-            "Create a short description of the chat (including the starting message)"
+            f"Based on '{user_input}', create a 1-3 word name for the AI persona",
+            f"Generate a starting message in the specified language from this persona about the topic",
+            f"Create a short chat description including: {user_input}"
         ]
 
         answers, raw_response = ask_questions(setup_questions, GOOGLE_API_KEY)
 
-        # Validate answer count strictly
-        if len(answers) != len(setup_questions):
-            error_msg = f"Answer count mismatch. Expected {len(setup_questions)}, got {len(answers)}. Raw response: {raw_response}"
+        if len(answers) != 3:
+            error_msg = f"Invalid setup response. Expected 3 answers, got {len(answers)}. Raw response: {raw_response}"
             return jsonify({'response': error_msg}), 400
 
         session.update({
             'persona': answers[0],
-            'starting_message': answers[1],
-            'description': answers[2],
-            'summary': None,
+            'active': True,
+            'summary': answers[2],  # Use description as initial summary
             'history': []
         })
 
         return jsonify({
-            'response': "With who, in what language and about what would you like to talk about?",
+            'response': answers[1],  # The generated starting message
             'persona': session['persona']
         })
 
@@ -54,31 +57,26 @@ def start_chat():
 @app.route('/chat', methods=['POST'])
 def chat():
     try:
-        if 'summary' not in session:
+        if not session.get('active'):
             return jsonify({'response': 'Start a conversation first'}), 400
 
         data = request.json
-        user_message = data.get('message', '')
+        user_message = data.get('message', '').strip()
         if not user_message:
             return jsonify({'response': 'Empty message'}), 400
 
-        # Get current context
-        current_summary = session['summary'] or session['description']
-
-        # Generate response and new summary
+        # Generate response and update summary
         chat_questions = [
-            f"Generate response using this context: {current_summary} + user message: {user_message}",
-            "Create a concise new summary for future context"
+            f"Respond as {session['persona']} to: {user_message}",
+            f"Create a concise new summary of this conversation including: {session['summary']} and {user_message}"
         ]
 
         answers, raw_response = ask_questions(chat_questions, GOOGLE_API_KEY)
 
-        # Validate answer count
-        if len(answers) != len(chat_questions):
-            error_msg = f"Failed to process message. Expected {len(chat_questions)} answers, got {len(answers)}. Raw response: {raw_response}"
+        if len(answers) != 2:
+            error_msg = f"Invalid chat response. Expected 2 answers, got {len(answers)}. Raw response: {raw_response}"
             return jsonify({'response': error_msg}), 400
 
-        # Update session state
         session['summary'] = answers[1]
         session['history'].append({
             'user': user_message,
