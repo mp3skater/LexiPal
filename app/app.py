@@ -58,7 +58,8 @@ def start_chat():
 def chat():
     try:
         if not session.get('active'):
-            return jsonify({'response': 'Start a conversation first'}), 400
+            # Auto-trigger /start if session is not active
+            return start_chat()
 
         data = request.json
         user_message = data.get('message', '').strip()
