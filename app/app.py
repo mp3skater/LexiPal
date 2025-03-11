@@ -1,5 +1,5 @@
-import os
-from flask import Flask, request, jsonify, render_template, session
+import os, uuid
+from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from utils.multiple_questions_handler.handler import ask_questions  # Import your method
 
@@ -7,25 +7,27 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key')
 
-GOOGLE_API_KEY = os.getenv("GEMINI_API")
+# In-memory store for conversations (Note: not persistent)
+conversations = {}
 
+GOOGLE_API_KEY = os.getenv("GEMINI_API")
 
 @app.route('/')
 def home():
+    # The home page can serve your client code
     return render_template('index.html')
-
 
 @app.route('/start', methods=['POST'])
 def start_chat():
     try:
-        session.clear()
         data = request.json
+        # If the client doesn't send a conversation_id, generate a new one
+        conversation_id = data.get('conversation_id') or str(uuid.uuid4())
         user_input = data.get('message', '').strip()
 
         if not user_input:
             return jsonify({'response': 'Please specify who, language, and topic'}), 400
 
-        # Generate chat context based on user's initial input
         setup_questions = [
             f"Based on '{user_input}', create a 1-3 word name for the AI persona",
             f"Generate a starting message in the specified language from this persona about the topic",
@@ -38,38 +40,43 @@ def start_chat():
             error_msg = f"Invalid setup response. Expected 3 answers, got {len(answers)}. Raw response: {raw_response}"
             return jsonify({'response': error_msg}), 400
 
-        session.update({
+        # Store conversation state using the conversation_id
+        conversations[conversation_id] = {
             'persona': answers[0],
             'active': True,
-            'summary': answers[2],  # Use description as initial summary
+            'summary': answers[2],
             'history': []
-        })
+        }
 
         return jsonify({
-            'response': answers[1],  # The generated starting message
-            'persona': session['persona']
+            'conversation_id': conversation_id,
+            'response': answers[1],
+            'persona': answers[0]
         })
 
     except Exception as e:
         return jsonify({'response': f'Chat initialization failed: {str(e)}'}), 500
 
-
 @app.route('/chat', methods=['POST'])
 def chat():
     try:
-        if not session.get('active'):
-            # Auto-trigger /start if session is not active
+        data = request.json
+        conversation_id = data.get('conversation_id')
+        if not conversation_id or conversation_id not in conversations:
+            # If no valid conversation id, auto-trigger a new start
             return start_chat()
 
-        data = request.json
+        conversation = conversations[conversation_id]
+        if not conversation.get('active'):
+            return jsonify({'response': 'Start a conversation first'}), 400
+
         user_message = data.get('message', '').strip()
         if not user_message:
             return jsonify({'response': 'Empty message'}), 400
 
-        # Generate response and update summary
         chat_questions = [
-            f"Respond as {session['persona']} to: {user_message}",
-            f"Create a concise new summary of this conversation including: {session['summary']} and {user_message}"
+            f"Respond as {conversation['persona']} to: {user_message}",
+            f"Create a concise new summary of this conversation including: {conversation['summary']} and {user_message}"
         ]
 
         answers, raw_response = ask_questions(chat_questions, GOOGLE_API_KEY)
@@ -78,20 +85,19 @@ def chat():
             error_msg = f"Invalid chat response. Expected 2 answers, got {len(answers)}. Raw response: {raw_response}"
             return jsonify({'response': error_msg}), 400
 
-        session['summary'] = answers[1]
-        session['history'].append({
+        conversation['summary'] = answers[1]
+        conversation['history'].append({
             'user': user_message,
             'bot': answers[0]
         })
 
         return jsonify({
             'response': answers[0],
-            'persona': session['persona']
+            'persona': conversation['persona']
         })
 
     except Exception as e:
         return jsonify({'response': f'Chat error: {str(e)}'}), 500
 
-
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5001, debug=True)
