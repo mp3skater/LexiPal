@@ -1,4 +1,5 @@
-import os, uuid
+import os
+import uuid
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from utils.multiple_questions_handler.handler import ask_questions  # Import your method
@@ -7,21 +8,22 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key')
 
-# In-memory store for conversations (Note: not persistent)
+# Toggle logging on/off with this one line
+LOGGING_ENABLED = False  # Set to False to disable logging
+
+# In-memory store for conversations (Not persistent)
 conversations = {}
 
 GOOGLE_API_KEY = os.getenv("GEMINI_API")
 
 @app.route('/')
 def home():
-    # The home page can serve your client code
     return render_template('index.html')
 
 @app.route('/start', methods=['POST'])
 def start_chat():
     try:
         data = request.json
-        # If the client doesn't send a conversation_id, generate a new one
         conversation_id = data.get('conversation_id') or str(uuid.uuid4())
         user_input = data.get('message', '').strip()
 
@@ -40,13 +42,19 @@ def start_chat():
             error_msg = f"Invalid setup response. Expected 3 answers, got {len(answers)}. Raw response: {raw_response}"
             return jsonify({'response': error_msg}), 400
 
-        # Store conversation state using the conversation_id
         conversations[conversation_id] = {
             'persona': answers[0],
             'active': True,
             'summary': answers[2],
             'history': []
         }
+
+        # Logging
+        if LOGGING_ENABLED:
+            print(f"🟢 New Conversation Started (ID: {conversation_id})")
+            print(f"   User Input: {user_input}")
+            print(f"   AI Persona: {answers[0]}")
+            print(f"   AI First Response: {answers[1]}")
 
         return jsonify({
             'conversation_id': conversation_id,
@@ -63,7 +71,6 @@ def chat():
         data = request.json
         conversation_id = data.get('conversation_id')
         if not conversation_id or conversation_id not in conversations:
-            # If no valid conversation id, auto-trigger a new start
             return start_chat()
 
         conversation = conversations[conversation_id]
@@ -91,6 +98,12 @@ def chat():
             'bot': answers[0]
         })
 
+        # Logging
+        if LOGGING_ENABLED:
+            print(f"📝 Conversation ID: {conversation_id}")
+            print(f"   User: {user_message}")
+            print(f"   AI: {answers[0]}")
+
         return jsonify({
             'response': answers[0],
             'persona': conversation['persona']
@@ -100,4 +113,4 @@ def chat():
         return jsonify({'response': f'Chat error: {str(e)}'}), 500
 
 if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+    app.run(port=5000, debug=True)
