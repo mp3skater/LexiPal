@@ -14,6 +14,7 @@
             <div class="bg-gray-800 text-white p-4 rounded-t-lg">
                 <h1 class="text-xl font-bold">ChatGPT Clone</h1>
                 <p class="text-sm opacity-75">Powered by Gemini API</p>
+                <p class="text-sm mt-1" id="persona-name"></p>
             </div>
 
             <!-- Chat Messages -->
@@ -25,7 +26,7 @@
             <div class="p-4 border-t">
                 <form id="chat-form" class="flex gap-2">
                     <input type="text" id="user-input"
-                           class="flex-1 border rounded-lg p-2 fous:outline-none focus:ring-2 focus:ring-blue-500"
+                           class="flex-1 border rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                            placeholder="Type your message...">
                     <button type="submit" id="send-button"
                             class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors">
@@ -36,11 +37,14 @@
         </div>
     </div>
 
-    <script src=""></script>
     <script>
         const chatForm = document.getElementById('chat-form');
         const userInput = document.getElementById('user-input');
         const chatMessages = document.getElementById('chat-messages');
+
+        // Generate unique conversation ID when the page loads
+        let conversationId = crypto.randomUUID();
+        let isNewConversation = true;
 
         async function handleSubmit(e) {
             e.preventDefault();
@@ -52,18 +56,40 @@
             userInput.value = '';
 
             try {
-                const response = await fetch('/chat', {
+                const url = isNewConversation ? '/start' : '/chat';
+                const response = await fetch(url, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ message })
+                    body: JSON.stringify({
+                        conversation_id: conversationId,
+                        message: message
+                    })
                 });
 
                 const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.response || 'Request failed');
+                }
+
                 addMessage(data.response, 'bot');
+
+                // Update persona name if it's a new conversation
+                if (isNewConversation) {
+                    const personaElement = document.getElementById('persona-name');
+                    if (personaElement) {
+                        personaElement.textContent = data.persona;
+                    }
+                    isNewConversation = false;
+                }
             } catch (error) {
-                addMessage('Error communicating with the server', 'bot');
+                addMessage(`Error: ${error.message}`, 'bot');
+                // Reset conversation if initialization failed
+                if (isNewConversation) {
+                    conversationId = crypto.randomUUID();
+                    isNewConversation = true;
+                }
             }
         }
 
@@ -77,7 +103,5 @@
 
         chatForm.addEventListener('submit', handleSubmit);
     </script>
-    <!-- At the bottom of your body, replace the old script with -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
