@@ -21,7 +21,12 @@ conversation_locks = defaultdict(Lock)
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('start.html')  # Changed from index.html
+
+# Add new route for the chat interface
+@app.route('/chat')
+def chat_interface():
+    return render_template('index.html')  # Serve index.html here
 
 @app.route('/start', methods=['POST'])
 def start_chat():
@@ -104,6 +109,7 @@ def chat():
 
     except Exception as e:
         return jsonify({'response': f'Chat error: {str(e)}'}), 500
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
