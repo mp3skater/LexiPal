@@ -3,105 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatGPT Clone with Gemini</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>LexiPal AI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
-<body class="screen">
+<body style="background-image: url('{{ url_for('static', filename='images/Bkgr1.svg') }}');">
 <div class="container">
-    <header class="header">
-        <h1 class="text-xl font-bold">ChatGPT Clone</h1>
-        <p class="text-sm opacity-75">Powered by Gemini API</p>
-        <p class="text-sm mt-1" id="persona-name"></p>
-    </header>
-    <div class="chat-box">
-        <div id="chat-messages" class="chat-messages"></div>
-        <div class="chat-input">
-            <form id="chat-form" class="input-container">
-                <div class="input-wrapper">
-                    <textarea id="user-input" class="input-field" placeholder="Type your message..."></textarea>
-                </div>
-                <button type="submit" id="send-button" class="send-btn" aria-label="Send"></button>
-            </form>
+    <!-- Header/Navbar -->
+    <header id="main-header">
+        <div class="logo">
+            <img src="{{ url_for('static', filename='images/logo.svg') }}" width="50" alt="LexiPal Logo">
+            <span>LexiPal</span>
         </div>
-    </div>
+
+        <nav class="navbar">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Languages</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+
+        <div class="right-section">
+            <div class="settings">
+                <button class="icon-button"><i class="fas fa-cog"></i></button>
+                <button class="icon-button"><i class="fas fa-user"></i></button>
+                <button class="icon-button"><i class="fas fa-question-circle"></i></button>
+            </div>
+            <button class="login-button">Log In</button>
+        </div>
+    </header>
+
+
+    <!-- Main Section -->
+    <main>
+        <div class="title">LexiPal</div>
+        <div class="description"><h4>Explore the power of LexiPal, a cutting-edge AI that offers conversational
+            experiences like never before.
+            Whether you're seeking help with learning, or simply having a conversation, LexiPal is your
+            intelligent assistant.</h4></div>
+
+        <div class="buttons">
+            <a href="/chat" target="_blank">
+                <div class="card">
+                    <h2>Chat Now</h2>
+                    <p>Free access to LexiPal<br>Experience the intelligent model in action.</p>
+                </div>
+            </a>
+            <div class="card">
+                <h2>Get LexiPal App</h2>
+                <p>Chat on the go with LexiPal.<br>Your free all-in-one AI assistant.<br></p>
+            </div>
+        </div>
+
+        <!-- Information Section about Chat -->
+        <section class="chat-info">
+            <h2>About LexiPal</h2>
+            <p style="font-size: 18px;font-weight: bold">LexiPal is your ultimate AI language partner, helping you learn and practice through interactive conversations.</p>
+
+            <!-- Four Feature Boxes -->
+            <div class="info-container">
+                <div class="info-box">
+                    <h3>🌍 Learn Multiple Languages</h3>
+                    <p>Practice Spanish, French, German, English, Japanese, and more at your own pace.</p>
+                </div>
+                <div class="info-box">
+                    <h3>🎭 Customizable Partners</h3>
+                    <p>Choose and personalize your AI language partner for a fun, immersive experience.</p>
+                </div>
+                <div class="info-box">
+                    <h3>🎉 100% Free Prototype</h3>
+                    <p>Enjoy full access to LexiPal’s features completely free of charge!</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-left">
+                <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="LexiPal Logo" class="footer-logo">
+                <div class="social-icons">
+                    <a href="#"><i class="fas fa-envelope"></i></a>
+                    <a href="#"><i class="fab fa-weixin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-zhihu"></i></a>
+                    <a href="#"><i class="fab fa-xiaohongshu"></i></a>
+                </div>
+                <p>&copy; 2025 LexiPal. All rights reserved.</p>
+            </div>
+            <div class="footer-right">
+                <div class="footer-column">
+                    <h3>DevLog</h3>
+                    <ul>
+                        <li><a href="#">LexiPal V1</a></li>
+                        <li><a href="#">LexiPal V2</a></li>
+
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="#">LexiPal Chat</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Legal & Safety</h3>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Use</a></li>
+                        <li><a href="#">Report Vulnerabilities</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Source Code</h3>
+                    <ul>
+                        <li><a href="https://github.com/mp3skater/LexiPal">GitHub</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
 </div>
-
-    <script>
-        const chatForm = document.getElementById('chat-form');
-        const userInput = document.getElementById('user-input');
-        const chatMessages = document.getElementById('chat-messages');
-
-        // Generate unique conversation ID when the page loads
-        let conversationId = crypto.randomUUID();
-        let isNewConversation = true;
-
-        async function handleSubmit(e) {
-            e.preventDefault();
-            const message = userInput.value.trim();
-            if (!message) return;
-
-            // Add user message
-            addMessage(message, 'user');
-            userInput.value = '';
-
-            try {
-                const url = isNewConversation ? '/start' : '/chat';
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        conversation_id: conversationId,
-                        message: message
-                    })
-                });
-
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.response || 'Request failed');
-                }
-
-                addMessage(data.response, 'bot');
-
-                // Update persona name if it's a new conversation
-                if (isNewConversation) {
-                    const personaElement = document.getElementById('persona-name');
-                    if (personaElement) {
-                        personaElement.textContent = data.persona;
-                    }
-                    isNewConversation = false;
-                }
-            } catch (error) {
-                addMessage(`Error: ${error.message}`, 'bot');
-                // Reset conversation if initialization failed
-                if (isNewConversation) {
-                    conversationId = crypto.randomUUID();
-                    isNewConversation = true;
-                }
-            }
-        }
-
-        function addMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender === 'user' ? 'user-message' : 'bot-message'}`;
-            messageDiv.innerHTML = text;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Handle form submit
-        chatForm.addEventListener('submit', handleSubmit);
-
-        // Prevent Enter from making a new line & submit the message instead
-        userInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                chatForm.dispatchEvent(new Event('submit'));
-            }
-        });
-
-    </script>
 </body>
+<script>
+    let lastScrollY = window.scrollY;
+    const header = document.getElementById("main-header");
+
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > lastScrollY) {
+            // Scrolling Down → Hide Header
+            header.classList.add("header-hidden");
+        } else {
+            // Scrolling Up → Show Header
+            header.classList.remove("header-hidden");
+        }
+        lastScrollY = window.scrollY;
+    });
+
+</script>
 </html>

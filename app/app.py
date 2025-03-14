@@ -21,12 +21,12 @@ conversation_locks = defaultdict(Lock)
 
 @app.route('/')
 def home():
-    return render_template('start.html')  # Changed from index.html
+    return render_template('index.html')  # Changed from chat.html
 
 # Add new route for the chat interface
 @app.route('/chat')
 def chat_interface():
-    return render_template('index.html')  # Serve index.html here
+    return render_template('chat.html')  # Serve chat.html here
 
 @app.route('/start', methods=['POST'])
 def start_chat():
