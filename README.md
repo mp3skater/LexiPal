@@ -63,7 +63,9 @@ We welcome contributions from the community! If you'd like to contribute, please
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the BSD-4-Clause License - see the [LICENSE](LICENSE) file for details.
+
+But in short that means that you may do with the code whatever you want as long as it remains free software (opensource) under the same rules, including keeping the original copyright notice and license intact. You must also give proper credit to the original authors (mp3skater and 23Benji) and acknowledge any modifications you make. Also, there is no warranty for the code, meaning we are not responsible for any issues that arise from its use.
 
 ## Contact
 
