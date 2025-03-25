@@ -161,3 +161,27 @@ body {
     font-size: 18px;
     font-weight: bold;
 }
+
+.review-message {
+    background: #f0f9ff;
+    border-radius: 12px;
+    padding: 12px;
+    margin: 8px 0;
+    max-width: 85%;
+    align-self: flex-start;
+    font-size: 0.9em;
+    border: 1px solid #e0f2fe;
+}
+
+.review-header {
+    font-weight: 600;
+    color: #0369a1;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid #e0f2fe;
+}
+
+.review-content {
+    color: #083344;
+    line-height: 1.4;
+}
