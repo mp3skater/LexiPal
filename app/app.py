@@ -40,10 +40,14 @@ def start_chat():
         if not user_input:
             return jsonify({'response': 'Please specify who, language, and topic'}), 400
 
+
         setup_questions = [
-            f"Based on '{user_input}', create a 1-3 word name for the AI persona",
-            f"Generate a starting message in the specified language from this persona about the topic",
-            f"Create a short chat description including: {user_input}"
+            # Extract persona directly from "with [X]" (avoids generating new names)
+            f"Based on the user's input: '{user_input}', extract the **exact name** of the persona they want to talk to (after 'with'). Use 1-3 words. Examples: 'Diego Maradona', NOT 'Reporter' or 'Giovanni Rossi'.",
+            # Casual opener FROM the persona's perspective (not the user's)
+            f"Generate a casual, not superficial / detail rich but not too long first message in the specified language AS THE PERSONA. Example for Maradona: 'Nessuno mi ha detto sapevo che la mia intervistatrice sarebbe cosi bella. Che vuoi chiedermi bella?'",
+            # Descriptive chat title highlighting the persona
+            f"Summarise the info generated. Example: 'User impersonates good looking interviewer interviewing Maradona after a game. Maradona says the interviewer may start asking questions.'"
         ]
 
         answers, raw_response = ask_questions(setup_questions, GOOGLE_API_KEY)
@@ -86,8 +90,8 @@ def chat():
                 return jsonify({'response': 'Invalid conversation ID or session not active'}), 400
 
             chat_questions = [
-                f"Respond as {conversation['persona']} to: {user_message}",
-                f"Create a concise new summary of this conversation including: {conversation['summary']} and {user_message}"
+                f"Respond as \"{conversation['persona']}\" to: history: \"{conversation['history']}\" | Current question: \"{user_message}\"",
+                f"Create a concise new summary of this conversation including: \"{conversation['summary']}\" and the Current question: \"{user_message}\""
             ]
 
             answers, raw_response = ask_questions(chat_questions, GOOGLE_API_KEY)

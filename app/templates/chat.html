@@ -10,9 +10,8 @@
 <body class="screen">
 <div class="container">
     <header class="header">
-        <h1 class="text-xl font-bold">ChatGPT Clone</h1>
-        <p class="text-sm opacity-75">Powered by Gemini API</p>
-        <p class="text-sm mt-1" id="persona-name"></p>
+        <h1 class="text-sm mt-1" id="persona-name"># New Chat</h1>
+        <h2 class="text-sm opacity-75">Powered by Gemini API</h2>
     </header>
     <div class="chat-box">
         <div id="chat-messages" class="chat-messages"></div>
@@ -26,82 +25,6 @@
         </div>
     </div>
 </div>
-
-    <script>
-        const chatForm = document.getElementById('chat-form');
-        const userInput = document.getElementById('user-input');
-        const chatMessages = document.getElementById('chat-messages');
-
-        // Generate unique conversation ID when the page loads
-        let conversationId = crypto.randomUUID();
-        let isNewConversation = true;
-
-        async function handleSubmit(e) {
-            e.preventDefault();
-            const message = userInput.value.trim();
-            if (!message) return;
-
-            // Add user message
-            addMessage(message, 'user');
-            userInput.value = '';
-
-            try {
-                const url = isNewConversation ? '/start' : '/chat';
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        conversation_id: conversationId,
-                        message: message
-                    })
-                });
-
-                const data = await response.json();
-                if (!response.ok) {
-                    throw new Error(data.response || 'Request failed');
-                }
-
-                addMessage(data.response, 'bot');
-
-                // Update persona name if it's a new conversation
-                if (isNewConversation) {
-                    const personaElement = document.getElementById('persona-name');
-                    if (personaElement) {
-                        personaElement.textContent = data.persona;
-                    }
-                    isNewConversation = false;
-                }
-            } catch (error) {
-                addMessage(`Error: ${error.message}`, 'bot');
-                // Reset conversation if initialization failed
-                if (isNewConversation) {
-                    conversationId = crypto.randomUUID();
-                    isNewConversation = true;
-                }
-            }
-        }
-
-        function addMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${sender === 'user' ? 'user-message' : 'bot-message'}`;
-            messageDiv.innerHTML = text;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        // Handle form submit
-        chatForm.addEventListener('submit', handleSubmit);
-
-        // Prevent Enter from making a new line & submit the message instead
-        userInput.addEventListener('keydown', function (e) {
-            if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                chatForm.dispatchEvent(new Event('submit'));
-            }
-        });
-
-    </script>
 </body>
+<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </html>
