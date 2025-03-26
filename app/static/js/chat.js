@@ -89,11 +89,17 @@ userInput.addEventListener('keydown', function (e) {
 });
 
 function addReviewMessage(text) {
+    // Clean up the response and ensure consistent formatting
+    const formattedText = text
+        .replace(/^-/gm, '•') // Replace any dashes with bullets
+        .replace(/(\b(Grammar|Vocabulary|Possible Correction):)/g, '<strong>$1</strong>') // Bold labels
+        .replace(/\n/g, '<br>'); // Convert newlines to HTML breaks
+
     const reviewDiv = document.createElement('div');
     reviewDiv.className = 'review-message';
     reviewDiv.innerHTML = `
         <div class="review-header">Language Feedback</div>
-        <div class="review-content">${text}</div>
+        <div class="review-content">${formattedText}</div>
     `;
     chatMessages.appendChild(reviewDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;

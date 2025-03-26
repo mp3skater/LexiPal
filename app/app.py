@@ -45,7 +45,7 @@ def start_chat():
             # Extract persona directly from "with [X]" (avoids generating new names)
             f"Based on the user's input: '{user_input}', extract the **exact name** of the persona they want to talk to (after 'with'). Use 1-3 words. Examples: 'Diego Maradona', NOT 'Reporter' or 'Giovanni Rossi'.",
             # Casual opener FROM the persona's perspective (not the user's)
-            f"Generate a casual, not superficial / detail rich but not too long first message in the specified language AS THE PERSONA. Example for Maradona: 'Nessuno mi ha detto sapevo che la mia intervistatrice sarebbe cosi bella. Che vuoi chiedermi bella?'",
+            f"Generate a creative (can make details up), casual, not superficial but not too long first message in the specified language AS THE PERSONA. Not markdown. only thing allowed is html strong tags for actions. Example for Maradona: Nessuno mi ha detto sapevo che la mia intervistatrice sarebbe cosi bella. <strong>winks</strong> Che vuoi chiedermi bella?",
             # Descriptive chat title highlighting the persona
             f"Summarise the info generated. Example: 'User impersonates good looking interviewer interviewing Maradona after a game. Maradona says the interviewer may start asking questions.'"
         ]
@@ -89,15 +89,25 @@ def chat():
             if not conversation or not conversation.get('active'):
                 return jsonify({'response': 'Invalid conversation ID or session not active'}), 400
 
+            # In the /chat route's chat_questions
             chat_questions = [
                 f"Respond as \"{conversation['persona']}\" to: history: \"{conversation['history']}\" | Current question: \"{user_message}\"",
                 f"Create a concise new summary of this conversation including: \"{conversation['summary']}\" and the Current question: \"{user_message}\"",
-                # New review question
-                f"Analyze this language learning message: '{user_message}'. Give concise feedback in the conversation's language. "
-                f"Focus on: 1) Grammar 2) Vocabulary 3) Improvements. Use bullet points. Keep under 40 words."
+                # Single f-string for review question
+                (
+                    f"Analyze this language message: '{user_message}'. Give feedback in {conversation['persona']}'s language. Format EXACTLY:\n"
+                    "• Grammar: [c.a. 3 sentences assessment with reason]\n"
+                    "• Vocabulary: [1 sentence assessment]\n"
+                    "• Possible Correction: [correction ONLY if needed]\n"
+                    "Use • bullets. Max 100 words. Example:\n"
+                    "• Grammar: Incorrect verb conjugation 'were'. Should be 'was'. Because it is a singular noun.\n"
+                    "• Vocabulary: 'hey' is informal and colloquial. Acceptable in this conversation. OR 'wassup man' is informal and highly colloquial. Not acceptable in this conversation.\n"
+                    "• Possible Correction: 'I go' → 'I went' OR No correction needed"
+                )
             ]
 
             answers, raw_response = ask_questions(chat_questions, GOOGLE_API_KEY)
+
 
             if len(answers) != 3:
                 error_msg = f"Invalid chat response. Expected 3 answers, got {len(answers)}. Raw response: {raw_response}"
