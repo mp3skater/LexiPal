@@ -18,10 +18,10 @@
 
         <nav class="navbar">
             <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Features</a></li>
-                <li><a href="#">Languages</a></li>
-                <li><a href="#">Contact</a></li>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#languages">Languages</a></li>
+                <li><a href="#contact">Contact</a></li>
             </ul>
         </nav>
 
@@ -37,7 +37,7 @@
 
 
     <!-- Main Section -->
-    <main>
+    <main id="home">
         <div class="title">LexiPal</div>
         <div class="description"><h4>Explore the power of LexiPal, a cutting-edge AI that offers conversational
             experiences like never before.
@@ -58,13 +58,13 @@
         </div>
 
         <!-- Information Section about Chat -->
-        <section class="chat-info">
+        <section class="chat-info" id="features">
             <h2>About LexiPal</h2>
             <p style="font-size: 18px;font-weight: bold">LexiPal is your ultimate AI language partner, helping you learn and practice through interactive conversations.</p>
 
             <!-- Four Feature Boxes -->
             <div class="info-container">
-                <div class="info-box">
+                <div class="info-box" id="languages">
                     <h3>🌍 Learn Multiple Languages</h3>
                     <p>Practice Spanish, French, German, English, Japanese, and more at your own pace.</p>
                 </div>
@@ -83,17 +83,8 @@
     <!-- Footer -->
     <footer>
         <div class="footer-container">
-            <div class="footer-left">
+            <div class="footer-left" id="contact">
                 <img src="{{ url_for('static', filename='images/logo.svg') }}" alt="LexiPal Logo" class="footer-logo">
-                <div class="social-icons">
-                    <a href="#"><i class="fas fa-envelope"></i></a>
-                    <a href="#"><i class="fab fa-weixin"></i></a>
-                    <a href="https://github.com/23Benji"><i class="fab fa-github"></i></a>
-                    <a href="https://github.com/mp3skater"><i class="fab fa-github"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-zhihu"></i></a>
-                    <a href="#"><i class="fab fa-xiaohongshu"></i></a>
-                </div>
                 <p>&copy; 2025 LexiPal. All rights reserved.</p>
             </div>
             <div class="footer-right">
