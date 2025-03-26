@@ -37,6 +37,11 @@ async function handleSubmit(e) {
 
         addMessage(data.response, 'bot');
 
+        // Add language review if available
+        if (data.review) {
+            addReviewMessage(data.review);
+        }
+
         if (!isChatInitialized) {
             isChatInitialized = true;
         }
@@ -82,3 +87,14 @@ userInput.addEventListener('keydown', function (e) {
         chatForm.dispatchEvent(new Event('submit'));
     }
 });
+
+function addReviewMessage(text) {
+    const reviewDiv = document.createElement('div');
+    reviewDiv.className = 'review-message';
+    reviewDiv.innerHTML = `
+        <div class="review-header">Language Feedback</div>
+        <div class="review-content">${text}</div>
+    `;
+    chatMessages.appendChild(reviewDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}

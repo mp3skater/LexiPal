@@ -91,13 +91,16 @@ def chat():
 
             chat_questions = [
                 f"Respond as \"{conversation['persona']}\" to: history: \"{conversation['history']}\" | Current question: \"{user_message}\"",
-                f"Create a concise new summary of this conversation including: \"{conversation['summary']}\" and the Current question: \"{user_message}\""
+                f"Create a concise new summary of this conversation including: \"{conversation['summary']}\" and the Current question: \"{user_message}\"",
+                # New review question
+                f"Analyze this language learning message: '{user_message}'. Give concise feedback in the conversation's language. "
+                f"Focus on: 1) Grammar 2) Vocabulary 3) Improvements. Use bullet points. Keep under 40 words."
             ]
 
             answers, raw_response = ask_questions(chat_questions, GOOGLE_API_KEY)
 
-            if len(answers) != 2:
-                error_msg = f"Invalid chat response. Expected 2 answers, got {len(answers)}. Raw response: {raw_response}"
+            if len(answers) != 3:
+                error_msg = f"Invalid chat response. Expected 3 answers, got {len(answers)}. Raw response: {raw_response}"
                 return jsonify({'response': error_msg}), 400
 
             conversation['summary'] = answers[1]
@@ -108,7 +111,8 @@ def chat():
 
         return jsonify({
             'response': answers[0],
-            'persona': conversation['persona']
+            'persona': conversation['persona'],
+            'review': answers[2]  # Add review to response
         })
 
     except Exception as e:
