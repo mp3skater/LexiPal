@@ -1,0 +1,24 @@
+<header id="main-header">
+    <div class="logo">
+        <img src="{{ url_for('static', filename='images/logo.svg') }}" width="50" alt="LexiPal Logo">
+        <span style="color: #0a700a">LexiPal</span>
+    </div>
+
+    <nav class="navbar">
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/features">Features</a></li>
+            <li><a href="/languages">Languages</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="right-section">
+        <div class="settings">
+            <button class="icon-button"><i class="fas fa-cog"></i></button>
+            <button class="icon-button"><i class="fas fa-user"></i></button>
+            <button class="icon-button"><i class="fas fa-question-circle"></i></button>
+        </div>
+        <button class="login-button" onclick="window.location.href = '/login';">Login</button>
+    </div>
+</header>

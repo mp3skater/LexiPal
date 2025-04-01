@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LexiPal | Languages</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/headerFooter.css') }}">
+</head>
+<body style="background-image: url('{{ url_for('static', filename='images/Bkgr1.svg') }}');">
+
+{% include 'components/header.html' %}
+
+
+<main>
+    <div class="main-content">
+        <section class="languages">
+            <h2>Languages Supported by LexiPal</h2>
+            <p class="languages-top-description">LexiPal, powered by Google's Gemini models, supports a wide range of
+                languages to enhance your learning experience. You can interact and learn in the following
+                languages:</p>
+            <ul class="language-list">
+                <li>English (en)</li>
+                <li>French (fr)</li>
+                <li>German (de)</li>
+                <li>Spanish (es)</li>
+                <li>Russian (ru)</li>
+                <li>Italian (it)</li>
+                <li>And More!</li>
+            </ul>
+
+
+            <p class="languages-bottom-description">With such extensive language support, LexiPal ensures a personalized
+                and effective learning experience tailored to your linguistic preferences.</p>
+        </section>
+    </div>
+</main>
+
+{% include 'components/footer.html' %}
+
+
+
+<script>
+    let lastScrollY = window.scrollY;
+    const header = document.getElementById("main-header");
+
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > lastScrollY) {
+            // Scrolling Down → Hide Header
+            header.classList.add("header-hidden");
+        } else {
+            // Scrolling Up → Show Header
+            header.classList.remove("header-hidden");
+        }
+        lastScrollY = window.scrollY;
+    });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const languageItems = document.querySelectorAll(".language-list li");
+
+        const handleScroll = () => {
+            const centerScreen = window.innerHeight / 2;
+
+            languageItems.forEach(item => {
+                const rect = item.getBoundingClientRect();
+                const itemCenter = rect.top + rect.height / 2.7;
+                const distanceFromCenter = Math.abs(centerScreen - itemCenter);
+                const maxDistance = 200; // Max distance for effect
+
+                // Calculate blur and scale dynamically
+                let blurAmount = Math.max(5, 20 - (distanceFromCenter / maxDistance) * 15); // Max blur 20px
+                let scaleAmount = Math.max(1, 1.2 - (distanceFromCenter / maxDistance) * 0.4); // Max scale 1.4x
+
+                item.style.setProperty("--blur-amount", `${blurAmount}px`);
+                item.style.setProperty("--scale-amount", scaleAmount);
+            });
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        handleScroll(); // Run once to check initial state
+    });
+</script>
+</body>
+</html>
+<style>
+
+    /* General styles */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed; /* Optional: Makes the background fixed while scrolling */
+    }
+
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .main-content{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    .languages h2{
+        text-align: center;
+        margin-top: 150px;
+        font-size: 40px;
+    }
+
+    .languages-top-description{
+        text-align: center;
+        margin-right: 20%;
+        margin-left: 20%;
+        margin-bottom: 60px;
+    }
+    .languages-bottom-description{
+        text-align: center;
+        margin-right: 20%;
+        margin-left: 20%;
+        margin-bottom: 30px;
+    }
+
+    .language-list {
+        display: grid ;
+        gap: 20px;
+        list-style-type: none;
+        padding: 0;
+        margin: 20px;
+        transition: transform 0.2s ease-out;
+    }
+
+    .language-list li {
+        backdrop-filter: blur(var(--blur-amount, 5px));
+        transform: scale(var(--scale-amount, 1));
+        color: #013101;
+        padding: 10px;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        width: 80%;
+        height: 80px;
+        margin: 0 auto;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.2s, backdrop-filter 0.3s, font-size 0.3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+</style>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>LexiPal | Contact Us</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/headerFooter.css') }}">
+</head>
+<body style="background-image: url('{{ url_for('static', filename='images/Bkgr1.svg') }}');">
+
+{% include 'components/header.html' %}
+<main>
+    <div class="main-content">
+        <section class="contact" id="contact-section">
+            <h2 id="contact-title">Contact Us</h2>
+            <p id="contact-description" class="contact-top-description">
+                We'd love to hear from you! Whether you have questions, feedback, or suggestions, feel free to reach
+                out.
+            </p>
+
+            <!-- Contact Form -->
+            <form id="contact-form" action="#" method="POST" class="contact-form">
+                <div class="input-container">
+                    <label for="name">Your Name</label>
+                    <input type="text" id="name" name="name" required placeholder="Enter your name">
+                </div>
+                <div class="input-container">
+                    <label for="email">Your Email</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email">
+                </div>
+                <div class="input-container">
+                    <label for="message">Your Message</label>
+                    <textarea id="message" name="message" required placeholder="Write your message"></textarea>
+                </div>
+                <button type="submit">Send Message</button>
+            </form>
+        </section>
+    </div>
+</main>
+
+{% include 'components/footer.html' %}
+
+<script>
+    document.getElementById("contact-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent actual form submission
+
+        // Replace title and description with thank you message
+        document.getElementById("contact-title").innerText = "Thank You!";
+        document.getElementById("contact-description").innerText = "We appreciate your message and will get back to you soon.";
+
+        // Hide form after submission
+        document.getElementById("contact-form").style.display = "none";
+    });
+</script>
+
+<script>
+    let lastScrollY = window.scrollY;
+    const header = document.getElementById("main-header");
+
+    window.addEventListener("scroll", () => {
+        if (window.scrollY > lastScrollY) {
+            // Scrolling Down → Hide Header
+            header.classList.add("header-hidden");
+        } else {
+            // Scrolling Up → Show Header
+            header.classList.remove("header-hidden");
+        }
+        lastScrollY = window.scrollY;
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const inputFields = document.querySelectorAll(".contact-form .input-container input, .contact-form .input-container textarea");
+
+        inputFields.forEach(field => {
+            field.addEventListener("focus", () => {
+                field.style.borderColor = "#4caf50"; // Change to green when focused
+            });
+
+            field.addEventListener("blur", () => {
+                if (field.value.trim() === "") {
+                    field.style.borderColor = "red"; // Change to red if field is empty
+                } else {
+                    field.style.borderColor = ""; // Reset border color if field is filled
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
+
+<style>
+    .main-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh; /* Full viewport height */
+        padding: 20px; /* Ensure some spacing */
+        box-sizing: border-box;
+    }
+
+    /* Contact Section */
+    .contact {
+        width: 100%;
+        max-width: 600px; /* Adjust form width */
+        backdrop-filter: blur(20px);
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Adjust margins */
+    .contact h2 {
+        text-align: center;
+        font-size: 40px;
+        margin-bottom: 20px;
+    }
+
+    .contact-top-description {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    /* Center the form */
+    .contact-form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+
+    .input-container {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .input-container input, .input-container textarea {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        transition: border 0.3s ease;
+    }
+
+    .input-container textarea {
+        resize: vertical;
+        height: 150px;
+    }
+
+    button {
+        width: 100%;
+        background-color: #4caf50;
+        color: white;
+        padding: 12px;
+        font-size: 16px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+</style>
