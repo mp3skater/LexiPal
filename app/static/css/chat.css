@@ -1,68 +1,88 @@
+/* static/css/chat.css */
+
+/* Remove body centering - app-container handles layout */
 body {
-    background-color: #bfd4bc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    /* background-color: #bfd4bc; */ /* Moved to app-container */
+    /* display: flex; */ /* REMOVE */
+    /* justify-content: center; */ /* REMOVE */
+    /* align-items: center; */ /* REMOVE */
+    /* height: 100vh; */ /* REMOVE */
     margin: 0;
+    font-family: sans-serif; /* Add a default font */
 }
 
+/* Keep .screen if used elsewhere, but it doesn't control main layout now */
 .screen {
     background-color: #bfd4bc;
     min-width: 200px;
-
 }
 
+/* Container needs to center itself within main-content */
 .container {
-    max-width: 640px;
-    width: 100%;
+    max-width: 700px; /* Slightly wider to look better when pushed */
+    width: 90%; /* Use percentage width, up to max-width */
+    margin: 0 auto; /* Center horizontally IN THE MAIN-CONTENT AREA */
     display: flex;
     flex-direction: column;
-    align-items: center;
+    /* align-items: center; */ /* Let content align naturally */
+    height: 100%; /* Try to fill the main-content height */
+    padding: 20px 0; /* Add some vertical padding */
+    box-sizing: border-box;
 }
 
 .header {
-    background-color: #1f2937;
+    background-color: #1f2937; /* Dark blue-grey */
     color: white;
-    padding: 16px;
-    border-radius: 20px;
+    padding: 12px 16px; /* Adjust padding */
+    border-radius: 20px; /* Your rounded corners */
     text-align: center;
-    width: 100%;
+    width: 100%; /* Take full width of the container */
+    flex-shrink: 0; /* Prevent header from shrinking */
+    box-sizing: border-box;
+    margin-bottom: 15px; /* Space between header and chat */
 }
 
+/* Style header text if not using Tailwind */
 .header h1 {
     margin: 0;
-    font-size: 1.75rem;
+    font-size: 1.125rem; /* Larger */
     font-weight: bold;
+    line-height: 1.2;
 }
-
-.subheader {
-    font-size: 0.875rem;
+.header h2 {
+    margin: 4px 0 0 0;
+    font-size: 0.8rem; /* Smaller */
     opacity: 0.75;
+    font-weight: normal;
 }
 
+
+/* Chat Box should fill remaining vertical space */
 .chat-box {
-    background: #bfd4bc;
+    /* background: #bfd4bc; */ /* Inherit from parent or set if different */
+    background: transparent; /* Make it transparent */
     border-radius: 8px;
     display: flex;
     flex-direction: column;
-    height: 80vh;
-    width: 100%;
-    max-width: 60%;
-    overflow: hidden;
+    flex-grow: 1; /* IMPORTANT: Make chat-box fill vertical space */
+    width: 100%; /* Take full width of the container */
+    overflow: hidden; /* Prevents children from overflowing incorrectly */
+    /* max-width: 60%; */ /* REMOVE THIS - let it be 100% of the container */
+    /* height: 80vh; */ /* REMOVE THIS - use flex-grow */
 }
 
 .chat-messages {
-    flex: 1;
-    overflow-y: auto;
+    flex-grow: 1; /* Allow message area to expand */
+    overflow-y: auto; /* Enable scrolling for messages */
     padding: 16px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 12px; /* Slightly more space between messages */
 }
 
+/* Keep message styles */
 .message {
-    max-width: 70%;
+    max-width: 75%; /* Allow slightly wider messages */
     padding: 10px 14px;
     border-radius: 16px;
     font-size: 14px;
@@ -71,6 +91,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
     animation: fadeIn 0.3s forwards;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1); /* Subtle shadow */
 }
 
 @keyframes fadeIn {
@@ -79,64 +100,81 @@ body {
 }
 
 .user-message {
-    background-color: #10b981;
+    background-color: #10b981; /* Your green */
     color: white;
     align-self: flex-end;
-    border-bottom-right-radius: 0;
+    border-bottom-right-radius: 4px; /* Slightly less rounded corner */
 }
 
 .bot-message {
-    background-color: #e5e7eb;
-    color: black;
+    background-color: #e5e7eb; /* Light grey */
+    color: #1f2937; /* Dark text */
     align-self: flex-start;
-    border-bottom-left-radius: 0;
+    border-bottom-left-radius: 4px; /* Slightly less rounded corner */
 }
 
+/* Specific style for the initial message like in the screenshot */
+.message.bot-message.initial-prompt {
+    background-color: #ffffe0; /* Light yellow */
+    color: #333; /* Darker text for yellow background */
+    max-width: 80%;
+    border-radius: 8px;
+    align-self: center; /* Center the initial prompt */
+    text-align: center;
+    margin-top: 20px;
+     box-shadow: none; /* Optional: remove shadow for this one */
+}
+
+
+/* Chat Input Area */
 .chat-input {
-    padding: 16px;
-    border-top: 1px solid #d1d5db;
-    background: transparent;
-    position: sticky;
-    bottom: 0;
-    display: flex;
-    gap: 8px;
+    padding: 10px 16px 16px 16px; /* Adjust padding */
+    /* border-top: 1px solid #d1d5db; */ /* Remove top border */
+    background: transparent; /* Match background */
+    flex-shrink: 0; /* Prevent input area from shrinking */
+    margin-top: 10px; /* Space above input */
 }
 
-/* Updated input and button styles */
+/* Input and button container */
 .input-container {
     display: flex;
-    align-items: center;
+    align-items: flex-end; /* Align items to bottom for textarea */
     width: 100%;
-    background: #f8f8f8;
+    background: #ffffff; /* White background for input field */
     border: 1px solid #ccc;
-    border-radius: 24px;
-    padding: 8px;
+    border-radius: 24px; /* Rounded corners */
+    padding: 8px 8px 8px 15px; /* Adjust padding */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .input-wrapper {
-    flex: 1;
-    display: flex;
-    align-items: center;
+    flex-grow: 1; /* Take available space */
+    display: flex; /* Needed for alignment within wrapper */
 }
 
 .input-field {
-    flex: 1;
+    flex-grow: 1;
     border: none;
     outline: none;
     background: transparent;
-    resize: none;
+    resize: none; /* Prevent manual resize */
     font-size: 16px;
-    padding: 8px;
-    width: 100%;
+    padding: 8px 0; /* Vertical padding */
+    line-height: 1.4;
+    max-height: 150px; /* Limit auto-grow height */
+    overflow-y: auto; /* Add scroll if max-height is reached */
+    color: #333;
+}
+.input-field::placeholder {
+    color: #999;
 }
 
-/* Send button with paper plane icon */
+/* Send button */
 .send-btn {
-    width: 44px;
-    height: 44px;
+    width: 40px; /* Slightly smaller */
+    height: 40px;
     border: none;
-    background: #10b981;
+    background: #10b981; /* Your green */
     color: white;
     border-radius: 50%;
     display: flex;
@@ -144,10 +182,12 @@ body {
     justify-content: center;
     cursor: pointer;
     transition: background 0.2s ease-in-out, transform 0.1s ease-in-out;
+    flex-shrink: 0; /* Prevent button shrinking */
+    margin-left: 8px; /* Space between textarea and button */
 }
 
 .send-btn:hover {
-    background: #059669;
+    background: #059669; /* Darker green */
     transform: scale(1.05);
 }
 
@@ -155,9 +195,11 @@ body {
     transform: scale(0.95);
 }
 
-/* Paper plane (send) icon */
+/* Send icon (using Font Awesome preferably, but keeping your arrow for now) */
 .send-btn::before {
-    content: "➤";  /* Unicode arrow symbol */
+    content: "➤"; /* Unicode arrow */
     font-size: 18px;
     font-weight: bold;
+    transform: rotate(-45deg) translateY(1px); /* Rotate to look like paper plane */
 }
+
