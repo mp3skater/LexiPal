@@ -5,7 +5,7 @@
     <title>LexiPal | Contact Us</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/headerFooter.css') }}">
 </head>
-<body style="background-image: url('{{ url_for('static', filename='images/Bkgr1.svg') }}');">
+<body style="background-image: url('{{ url_for('static', filename='images/Bkgr1.svg') }}');" >
 
 {% include 'components/header.html' %}
 <main>
@@ -37,8 +37,6 @@
     </div>
 </main>
 
-{% include 'components/footer.html' %}
-
 <script>
     document.getElementById("contact-form").addEventListener("submit", function (event) {
         event.preventDefault(); // Prevent actual form submission
@@ -51,21 +49,8 @@
         document.getElementById("contact-form").style.display = "none";
     });
 </script>
-
 <script>
-    let lastScrollY = window.scrollY;
-    const header = document.getElementById("main-header");
-
-    window.addEventListener("scroll", () => {
-        if (window.scrollY > lastScrollY) {
-            // Scrolling Down → Hide Header
-            header.classList.add("header-hidden");
-        } else {
-            // Scrolling Up → Show Header
-            header.classList.remove("header-hidden");
-        }
-        lastScrollY = window.scrollY;
-    });
+    document.body.style.overflow = "hidden";
 </script>
 
 <script>
@@ -96,9 +81,10 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100vh; /* Full viewport height */
+        height: 110vh; /* Full viewport height */
         padding: 20px; /* Ensure some spacing */
         box-sizing: border-box;
+
     }
 
     /* Contact Section */
