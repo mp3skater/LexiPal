@@ -1,154 +1,374 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>LexiPal | Languages</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LexiPal - AI Language Learning</title>
+    <meta name="description" content="Learn languages naturally with AI-powered conversations. LexiPal helps you master new languages through personalized practice." />
+    <meta name="author" content="LexiPal" />
+
+    <meta property="og:title" content="LexiPal - AI Language Learning" />
+    <meta property="og:description" content="Learn languages naturally with AI-powered conversations. LexiPal helps you master new languages through personalized practice." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@lexipal_ai" />
+    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/headerFooter.css') }}">
-</head>
-<body style="background-image: url('{{ url_for('static', filename='images/Bkgr1.svg') }}');">
+  </head>
 
-{% include 'components/header.html' %}
+  <body>
+    <div id="root">
+      <!-- Header -->
 
-
-<main>
-    <div class="main-content">
-        <section class="languages">
-            <h2>Languages Supported by LexiPal</h2>
-            <p class="languages-top-description">LexiPal, powered by Google's Gemini models, supports a wide range of
-                languages to enhance your learning experience. You can interact and learn in the following
-                languages:</p>
-            <ul class="language-list">
-                <li>English (en)</li>
-                <li>French (fr)</li>
-                <li>German (de)</li>
-                <li>Spanish (es)</li>
-                <li>Russian (ru)</li>
-                <li>Italian (it)</li>
-                <li>And More!</li>
-            </ul>
+      {% include 'components/header.html' %}
 
 
-            <p class="languages-bottom-description">With such extensive language support, LexiPal ensures a personalized
-                and effective learning experience tailored to your linguistic preferences.</p>
+      <!-- Main Content -->
+      <main class="container">
+        <section class="language-section">
+          <div class="section-header">
+            <h2 class="section-title">Languages Supported by LexiPal</h2>
+            <p class="section-description">
+              Powered by advanced AI models, LexiPal supports a wide range of languages to enhance your
+              learning experience. Chat, practice, and master these languages with our intelligent assistant.
+            </p>
+          </div>
+
+          <ul class="language-list" id="language-list">
+            <!-- Languages will be dynamically populated -->
+          </ul>
+
+          <div class="section-header" style="margin-top: 48px;">
+            <h3 style="font-size: 20px; margin-bottom: 16px;">More languages coming soon!</h3>
+            <p class="section-description" style="margin-bottom: 32px;">
+              With such extensive language support, LexiPal ensures a personalized
+              and effective learning experience tailored to your linguistic preferences.
+            </p>
+            <button class="button button-outline">
+              Request a Language
+            </button>
+          </div>
         </section>
+
+        <!-- Call to Action -->
+        <section class="cta">
+          <h2 class="cta-title">Ready to Start Your Language Journey?</h2>
+          <p class="cta-description">
+            Join thousands of learners who are already mastering new languages with LexiPal's
+            AI-powered conversation practice.
+          </p>
+          <div class="cta-buttons">
+            <button class="button button-secondary button-large">
+              Try for Free
+            </button>
+            <button class="button button-outline-white button-large">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              See Demo
+            </button>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer>
+        <div class="container footer-content">
+          <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m5 8 6 6"></path><path d="m4 14 6-6 2-3"></path><path d="M2 5h12"></path><path d="M7 2h1"></path><path d="m22 22-5-10-5 10"></path><path d="M14 18h6"></path>
+            </svg>
+            <span style="font-weight: 600; color: #4B5563;">LexiPal</span>
+          </div>
+          <div class="copyright">
+            © 2023 LexiPal. All rights reserved.
+          </div>
+          <div>
+            <button class="button button-ghost">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </footer>
     </div>
-</main>
-
-{% include 'components/footer.html' %}
 
 
-
-<script>
-    let lastScrollY = window.scrollY;
-    const header = document.getElementById("main-header");
-
-    window.addEventListener("scroll", () => {
-        if (window.scrollY > lastScrollY) {
-            // Scrolling Down → Hide Header
-            header.classList.add("header-hidden");
-        } else {
-            // Scrolling Up → Show Header
-            header.classList.remove("header-hidden");
-        }
-        lastScrollY = window.scrollY;
-    });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        const languageItems = document.querySelectorAll(".language-list li");
-
-        const handleScroll = () => {
-            const centerScreen = window.innerHeight / 2;
-
-            languageItems.forEach(item => {
-                const rect = item.getBoundingClientRect();
-                const itemCenter = rect.top + rect.height / 2.7;
-                const distanceFromCenter = Math.abs(centerScreen - itemCenter);
-                const maxDistance = 200; // Max distance for effect
-
-                // Calculate blur and scale dynamically
-                let blurAmount = Math.max(5, 20 - (distanceFromCenter / maxDistance) * 15); // Max blur 20px
-                let scaleAmount = Math.max(1, 1.2 - (distanceFromCenter / maxDistance) * 0.4); // Max scale 1.4x
-
-                item.style.setProperty("--blur-amount", `${blurAmount}px`);
-                item.style.setProperty("--scale-amount", scaleAmount);
-            });
-        };
-
-        window.addEventListener("scroll", handleScroll);
-        handleScroll(); // Run once to check initial state
-    });
-</script>
-</body>
-</html>
-<style>
-
-    /* General styles */
-    body {
-        font-family: Arial, sans-serif;
+    <style>
+      /* Base styles */
+      * {
         margin: 0;
         padding: 0;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed; /* Optional: Makes the background fixed while scrolling */
-    }
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+      }
 
-    a {
-        text-decoration: none;
-        color: inherit;
-    }
-
-    .main-content{
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-    }
-    .languages h2{
-        text-align: center;
-        margin-top: 150px;
-        font-size: 40px;
-    }
-
-    .languages-top-description{
-        text-align: center;
-        margin-right: 20%;
-        margin-left: 20%;
-        margin-bottom: 60px;
-    }
-    .languages-bottom-description{
-        text-align: center;
-        margin-right: 20%;
-        margin-left: 20%;
-        margin-bottom: 30px;
-    }
-
-    .language-list {
-        display: grid ;
-        gap: 20px;
-        list-style-type: none;
+      body {
+        background: linear-gradient(to bottom, #f0f9f0, #e6f5e6);
+        color: #333;
+        font-family: Arial, sans-serif;
+        margin-top: 10%;
         padding: 0;
-        margin: 20px;
-        transition: transform 0.2s ease-out;
-    }
+      }
 
-    .language-list li {
-        backdrop-filter: blur(var(--blur-amount, 5px));
-        transform: scale(var(--scale-amount, 1));
-        color: #013101;
-        padding: 10px;
-        border-radius: 8px;
-        font-size: 18px;
-        font-weight: bold;
-        width: 80%;
-        height: 80px;
+      .container {
+        width: 100%;
+        max-width: 1200px;
         margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Language section */
+      .language-section {
+        margin-bottom: 80px;
+      }
+
+      .section-header {
         text-align: center;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        transition: transform 0.2s, backdrop-filter 0.3s, font-size 0.3s;
+        margin-bottom: 64px;
+      }
+
+      .section-title {
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 24px;
+      }
+
+      .section-description {
+        color: #4B5563;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .language-list {
+        max-width: 800px;
+        margin: 0 auto;
+        list-style-type: none;
+      }
+
+      .language-item {
+        margin-bottom: 24px;
+        transition: all 0.3s ease;
+        transform: scale(1);
+        opacity: 1;
+        filter: blur(0px);
+      }
+
+      .language-card {
+        background: white;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+      }
+
+      .language-card:hover {
+        border-color: #22c55e;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      .language-icon {
+        background: linear-gradient(to bottom right, #dcfce7, #a7f3d0);
+        height: 64px;
+        width: 64px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .language-details {
+        flex: 1;
+      }
+
+      .language-name {
+        font-size: 20px;
+        font-weight: 600;
+        color: #111827;
+        display: flex;
+        align-items: center;
+      }
+
+      .language-code {
+        font-size: 14px;
+        font-weight: normal;
+        color: #6B7280;
+        margin-left: 8px;
+      }
+
+      .language-level {
+        color: #6B7280;
+      }
+
+      /* Call to action */
+      .cta {
+        background: linear-gradient(to right, #22c55e, #10b981);
+        border-radius: 16px;
+        padding: 40px;
+        text-align: center;
+        color: white;
+        margin-bottom: 80px;
+      }
+
+      .cta-title {
+        font-size: 30px;
+        font-weight: bold;
+        margin-bottom: 16px;
+      }
+
+      .cta-description {
+        max-width: 650px;
+        margin: 0 auto 32px auto;
+      }
+
+      .cta-buttons {
         display: flex;
         justify-content: center;
-        align-items: center;
-    }
-</style>
+        gap: 16px;
+      }
+
+      .button-secondary {
+        background: white;
+        color: #111827;
+      }
+
+      .button-secondary:hover {
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      .button-outline-white {
+        background: transparent;
+        color: white;
+        border: 1px solid white;
+      }
+
+      .button-outline-white:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      /* Responsive */
+      @media (max-width: 768px) {
+        .hero-title {
+          font-size: 36px;
+        }
+
+        .hero-description, .section-description, .cta-description {
+          font-size: 16px;
+        }
+
+        .language-card {
+          flex-direction: column;
+          text-align: center;
+          padding: 20px;
+        }
+
+        .hero-buttons, .cta-buttons {
+          flex-direction: column;
+          gap: 12px;
+        }
+
+        .footer-content {
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .nav-links {
+          display: none;
+        }
+      }
+    </style>
+
+    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
+    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        // Language data
+        const languages = [
+          { name: "English", code: "en", level: "All levels" },
+          { name: "French", code: "fr", level: "Beginner to Advanced" },
+          { name: "German", code: "de", level: "Beginner to Advanced" },
+          { name: "Spanish", code: "es", level: "All levels" },
+          { name: "Russian", code: "ru", level: "Beginner to Intermediate" },
+          { name: "Italian", code: "it", level: "Beginner to Advanced" },
+          { name: "Japanese", code: "jp", level: "Beginner to Intermediate" },
+          { name: "Chinese", code: "cn", level: "Beginner to Intermediate" },
+        ];
+
+        // Reference to the language list
+        const languageList = document.getElementById('language-list');
+
+        // Populate the language list
+        languages.forEach(language => {
+          const li = document.createElement('li');
+          li.className = 'language-item';
+
+          li.innerHTML = `
+            <div class="language-card">
+              <div class="language-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                  <path d="M2 12h20"></path>
+                </svg>
+              </div>
+              <div class="language-details">
+                <h3 class="language-name">
+                  ${language.name}
+                  <span class="language-code">(${language.code})</span>
+                </h3>
+                <p class="language-level">${language.level}</p>
+              </div>
+              <button class="button button-ghost" style="color: #22c55e;">
+                Start
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path>
+                </svg>
+              </button>
+            </div>
+          `;
+
+          languageList.appendChild(li);
+        });
+
+        // Store references to the language items
+        const languageItems = document.querySelectorAll('.language-item');
+
+        // Implement scroll effect
+        function handleScroll() {
+          const centerScreen = window.innerHeight / 2;
+
+          languageItems.forEach(item => {
+            const rect = item.getBoundingClientRect();
+            const itemCenter = rect.top + rect.height / 2;
+            const distanceFromCenter = Math.abs(centerScreen - itemCenter);
+            const maxDistance = 300;
+
+            // Calculate blur and scale dynamically
+            // Reduce blur amount to make it less blurry
+            let blurAmount = Math.min(2, (distanceFromCenter / maxDistance) * 2);
+            let scaleAmount = Math.max(0.95, 1.05 - (distanceFromCenter / maxDistance) * 0.1);
+            let opacityAmount = Math.max(0.8, 1 - (distanceFromCenter / maxDistance) * 0.2);
+
+            item.style.transform = `scale(${scaleAmount})`;
+            item.style.opacity = `${opacityAmount}`;
+            item.style.filter = `blur(${blurAmount}px)`;
+          });
+        }
+
+        window.addEventListener("scroll", handleScroll);
+        handleScroll(); // Initial check
+      });
+    </script>
+  </body>
+</html>
