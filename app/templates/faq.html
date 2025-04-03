@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LexiPal | FAQ</title>
+    <meta name="description" content="Frequently Asked Questions about LexiPal - AI Language Learning.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Shared Header/Footer Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/headerFooter.css') }}">
+
+    <!-- Page-Specific Styles -->
+    <style>
+        /* Base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            /* Consistent background like other pages */
+            background: linear-gradient(to bottom, #f0f9f0, #e6f5e6);
+            color: #333;
+            line-height: 1.6;
+            /* Ensure footer doesn't overlap content */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin-top: 10%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px; /* Standard width */
+            margin: 0 auto;
+            padding: 0 20px;
+            flex-grow: 1; /* Allows main content to push footer down */
+        }
+
+        main {
+             padding-top: 60px; /* Space below header */
+             padding-bottom: 60px; /* Space above footer */
+        }
+
+        /* --- FAQ Section Styles --- */
+        .faq-section {
+          width: 100%;
+          max-width: 800px; /* Centered FAQ container */
+          margin: 0 auto; /* Center the section */
+        }
+
+        .section-title {
+          font-size: 32px;
+          font-weight: bold;
+          margin-bottom: 16px;
+          text-align: center;
+          color: #111827;
+        }
+
+        .section-subtitle {
+          color: #4B5563;
+          text-align: center;
+          max-width: 700px;
+          margin: 0 auto 48px;
+        }
+
+        .accordions {
+          /* max-width: 800px; Already handled by faq-section */
+          /* margin: 0 auto; Already handled by faq-section */
+        }
+
+        .accordion {
+          margin-bottom: 16px;
+          border: 1px solid #E5E7EB;
+          border-radius: 8px;
+          overflow: hidden;
+          background-color: white;
+          transition: box-shadow 0.3s ease;
+        }
+        .accordion:hover {
+           box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .accordion-header {
+          background: transparent;
+          padding: 20px;
+          cursor: pointer;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .accordion-title {
+          font-weight: 600;
+          color: #111827;
+          font-size: 18px; /* Slightly larger title */
+        }
+
+        .accordion-icon {
+          transition: transform 0.3s ease;
+          color: #6B7280;
+        }
+         .accordion-icon svg { /* Target SVG directly */
+            width: 16px;
+            height: 16px;
+            stroke: currentColor; /* Use parent color */
+            stroke-width: 2; /* Ensure stroke width is visible */
+        }
+
+        .accordion.active .accordion-icon {
+          transform: rotate(180deg);
+        }
+
+        .accordion-content {
+          background: #F9FAFB;
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+           padding: 0 20px;
+        }
+
+        .accordion.active .accordion-content {
+          max-height: 400px; /* Increased max-height for potentially longer answers */
+           padding: 20px;
+        }
+
+        .accordion-body {
+          color: #4B5563;
+          /* Padding handled by accordion-content */
+        }
+         /* --- End FAQ Section Styles --- */
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            main {
+                padding-top: 40px;
+                padding-bottom: 40px;
+            }
+            .section-title {
+                font-size: 28px;
+            }
+             .section-subtitle {
+                 font-size: 16px;
+                 margin-bottom: 32px;
+             }
+            .accordion-title {
+                font-size: 16px;
+            }
+            .accordion-header, .accordion.active .accordion-content {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'components/header.html' %}
+
+    <main class="container">
+        <!-- FAQ Section -->
+        <section class="faq-section">
+          <h2 class="section-title">Frequently Asked Questions</h2>
+          <p class="section-subtitle">
+            Got questions about LexiPal? Find quick answers to common questions below.
+          </p>
+          <div class="accordions" id="faq-accordions">
+            <!-- FAQs will be dynamically populated by JS -->
+          </div>
+        </section>
+        <!-- End FAQ Section -->
+    </main>
+
+    {% include 'components/footer.html' %}
+
+    <!-- FAQ JavaScript -->
+    <script>
+        // --- FAQ Data ---
+        const faqsData = [
+          { question: "How does LexiPal's AI conversation work?", answer: "LexiPal uses advanced natural language processing (NLP) and large language models (LLMs) to understand what you say or type. It then generates responses that are contextually relevant, grammatically correct, and natural-sounding in your target language. The AI adapts its complexity based on the flow of the conversation and can simulate different personalities or speaking styles depending on the chosen character." },
+          {question: "Is LexiPal really 100% free?",answer: "Yes, absolutely! LexiPal is 100% free and open-source software. We are committed to making language learning accessible to everyone. You can use all its current features without any cost. Being open-source means the core platform will always remain free for the community."},
+          { question: "Which languages does LexiPal currently support?", answer: "LexiPal currently supports conversational practice in Spanish, French, German, Italian, Portuguese, English (for non-native speakers), Russian, Japanese, and Mandarin Chinese. We are actively working on expanding our language offerings based on user demand and the capabilities of underlying AI models." },
+          { question: "Can LexiPal help complete beginners?", answer: "Absolutely! LexiPal is designed for all levels. For beginners, the AI can start with very simple greetings, basic vocabulary (like colors, numbers, food), and fundamental sentence structures. You can explicitly tell your AI partner you're a beginner, and it will adjust its language and pace accordingly. It's a safe space to practice without pressure." },
+          { question: "How is LexiPal different from other language apps?", answer: "While many apps focus on flashcards, grammar drills, or matching games, LexiPal's core focus is on *conversational fluency*. Our main feature is practicing real back-and-forth dialogue with an AI partner that feels natural. We believe this immersive practice is key to building confidence and practical communication skills, complementing other learning methods." },
+          { question: "How accurate is the feedback and correction?", answer: "The AI provides generally accurate feedback on grammar, vocabulary usage, and sentence structure based on vast amounts of language data. However, AI is not perfect and might occasionally miss nuances or make a mistake. It's best used as a guide for improvement rather than an absolute grammatical authority. For critical grammar points, always cross-reference with trusted resources." },
+          { question: "Can I practice speaking with voice?", answer: "Voice input and output (speech-to-text and text-to-speech) are high-priority features currently under development! We aim to allow users to speak directly to their AI partner and hear the responses spoken back, further enhancing the immersive practice. Stay tuned for updates on this feature." } // Added more relevant FAQs
+        ];
+
+        // --- HTML Generation Function ---
+        function createFAQAccordionHTML(faq) {
+            // Using template literals for cleaner HTML structure
+            return `
+            <div class="accordion-header">
+              <div class="accordion-title">${faq.question}</div>
+              <div class="accordion-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="accordion-content">
+              <div class="accordion-body">${faq.answer}</div>
+            </div>
+          `;
+        }
+
+        // --- Content Population Function ---
+        function populateFAQs(container, faqs) {
+          if (!container) {
+              console.error("FAQ container not found!");
+              return;
+          }
+          container.innerHTML = ''; // Clear previous content
+          faqs.forEach(faq => {
+            const accordion = document.createElement('div');
+            accordion.className = 'accordion';
+            accordion.innerHTML = createFAQAccordionHTML(faq);
+            container.appendChild(accordion);
+          });
+        }
+
+        // --- Event Listener Setup Function ---
+        function setupFAQInteractions() {
+          const faqContainer = document.getElementById('faq-accordions');
+          if (!faqContainer) return;
+
+          // Use event delegation for efficiency
+          faqContainer.addEventListener('click', function(event) {
+             const header = event.target.closest('.accordion-header'); // Find the clicked header
+             if (header) {
+               const accordion = header.parentElement; // Get the parent .accordion element
+
+               // Optional: Close other open accordions
+                const currentlyActive = faqContainer.querySelector('.accordion.active');
+                if (currentlyActive && currentlyActive !== accordion) {
+                    currentlyActive.classList.remove('active');
+                }
+
+               // Toggle the active class on the clicked accordion
+               accordion.classList.toggle('active');
+             }
+          });
+        }
+
+        // --- Initialization ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const faqContainer = document.getElementById('faq-accordions');
+            populateFAQs(faqContainer, faqsData);
+            setupFAQInteractions();
+        });
+    </script>
+
+    <!-- Optional: GPT Engineer script - remove if not needed -->
+    <!-- <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script> -->
+
+</body>
+</html>

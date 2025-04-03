@@ -40,6 +40,10 @@ def contact():
 def register():
     return render_template('register.html')
 
+@app.route('/faq')
+def faq():
+    return render_template('faq.html')
+
 @app.route('/')
 def home():
     return render_template('index.html')
