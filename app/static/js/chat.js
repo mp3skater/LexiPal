@@ -92,7 +92,7 @@ function addReviewMessage(text) {
     // Clean up the response and ensure consistent formatting
     const formattedText = text
         .replace(/^-/gm, '•') // Replace any dashes with bullets
-        .replace(/(\b(Grammar|Vocabulary|Possible Correction):)/g, '<strong>$1</strong>') // Bold labels
+        .replace(/(\b(Grammar|Vocabulary|Possible Correction|Context):)/g, '<strong>$1</strong>') // Bold labels
         .replace(/\n/g, '<br>'); // Convert newlines to HTML breaks
 
     const reviewDiv = document.createElement('div');

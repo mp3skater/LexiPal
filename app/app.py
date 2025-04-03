@@ -13,20 +13,38 @@ app = Flask(__name__)
 CORS(app, supports_credentials=True)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key')
 
-GOOGLE_API_KEY = os.getenv("GEMINI_API")
+GOOGLE_API_KEY = os.getenv("GEMINI_PRO_API") or os.getenv("GEMINI_API")
 
 # Server-side conversation storage and locks
 conversations = {}
 conversation_locks = defaultdict(Lock)
 
+@app.route('/login')
+def login():
+    return render_template('login.html')
+@app.route('/languages')
+def languages():
+    return render_template('languages.html')
+
+@app.route('/features')
+def features():
+    return render_template('features.html')
+
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+@app.route('/register')
+def register():
+    return render_template('register.html')
+
 @app.route('/')
 def home():
-    return render_template('index.html')  # Changed from chat.html
+    return render_template('index.html')
 
-# Add new route for the chat interface
 @app.route('/chat')
 def chat_interface():
-    return render_template('chat.html')  # Serve chat.html here
+    return render_template('chat.html')
 
 @app.route('/start', methods=['POST'])
 def start_chat():
