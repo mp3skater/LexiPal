@@ -5,10 +5,6 @@ let isChatInitialized = false;
 let conversationId = crypto.randomUUID();
 let isNewConversation = true;
 
-const initialMessage = "With who, in what language and about what would you like to talk about?";
-document.addEventListener('DOMContentLoaded', () => {
-    addSystemMessage(initialMessage);
-});
 
 async function handleSubmit(e) {
     e.preventDefault();
@@ -103,4 +99,32 @@ function addReviewMessage(text) {
     `;
     chatMessages.appendChild(reviewDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+
+//SideBar
+const textarea = document.getElementById('user-input');
+if (textarea) {
+    const initialHeight = textarea.scrollHeight;
+    textarea.addEventListener('input', () => {
+        textarea.style.height = 'auto'; // Reset height
+        let newHeight = textarea.scrollHeight;
+        const maxHeight = 150; // Match CSS max-height
+        if (newHeight > maxHeight) {
+            newHeight = maxHeight;
+            textarea.style.overflowY = 'auto'; // Show scrollbar
+        } else {
+            textarea.style.overflowY = 'hidden'; // Hide scrollbar
+        }
+        textarea.style.height = `${newHeight}px`;
+    });
+    
+    // Initial adjustment in case of pre-filled content
+    textarea.style.height = `${initialHeight}px`;
+     if (initialHeight > 150) {
+         textarea.style.overflowY = 'auto';
+         textarea.style.height = '150px';
+     } else {
+         textarea.style.overflowY = 'hidden';
+     }
 }

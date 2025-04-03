@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexipal Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login-register.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/headerFooter.css') }}">
+</head>
+<body>
+{% include 'components/header.html' %}
+
+
+<div class="glass-container">
+    <div class="register-box">
+        <h2>Register</h2>
+        <form action="#" method="POST">
+            <div class="input-container">
+                <input type="text" id="username" name="username" required placeholder=" ">
+                <label for="username">Username</label>
+            </div>
+            <div class="input-container">
+                <input type="email" id="email" name="email" required placeholder=" ">
+                <label for="email">Email</label>
+            </div>
+            <div class="input-container">
+                <input type="password" id="password" name="password" required placeholder=" " minlength="8">
+                <label for="password">Password</label>
+            </div>
+            <div class="input-container">
+                <input type="password" id="confirm-password" name="confirm-password" required placeholder=" " minlength="8">
+                <label for="confirm-password">Confirm Password</label>
+            </div>
+            <button type="submit">Register</button>
+            <p>Already have an account? <a href="/login" id="login">Login</a></p>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -3,28 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ChatGPT Clone with Gemini</title>
+    <title>Language Learning AI</title>
+    <!-- Tailwind (if you still use it alongside custom CSS) -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Your Original CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+    <!-- Sidebar CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Tailwind overrides or base styles if needed */
+        /* Example: Ensure h1 uses custom CSS if Tailwind interferes */
+        .header h1 {
+            font-size: 1.125rem; /* text-lg equivalent roughly */
+            margin-top: 0.25rem; /* mt-1 */
+            font-weight: bold; /* Added for clarity */
+        }
+         .header h2 {
+            font-size: 0.875rem; /* text-sm */
+            opacity: 0.75;
+        }
+    </style>
 </head>
-<body class="screen">
-<div class="container">
-    <header class="header">
-        <h1 class="text-sm mt-1" id="persona-name"># New Chat</h1>
-        <h2 class="text-sm opacity-75">Powered by Gemini API</h2>
-    </header>
-    <div class="chat-box">
-        <div id="chat-messages" class="chat-messages"></div>
-        <div class="chat-input">
-            <form id="chat-form" class="input-container">
-                <div class="input-wrapper">
-                    <textarea id="user-input" class="input-field" placeholder="Type your message..."></textarea>
-                </div>
-                <button type="submit" id="send-button" class="send-btn" aria-label="Send"></button>
-            </form>
-        </div>
-    </div>
-</div>
+<body> <!-- Removed screen class, app-container controls layout -->
+
+    <div class="app-container">
+
+        <!-- Sidebar (same as before) -->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <button id="new-chat-btn" class="new-chat-button">
+                    <i class="fas fa-plus"></i> New Chat
+                </button>
+                <button id="close-sidebar-btn" class="sidebar-toggle close-btn" aria-label="Close sidebar">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="sidebar-content">
+                <h3 class="history-title">Chat History</h3>
+                <ul id="chat-history-list" class="chat-history">
+                    <!-- History items go here -->
+                    <li><a href="#">Example Chat 1</a></li>
+                </ul>
+            </div>
+            <div class="sidebar-footer">
+                 <a href="#"><i class="fas fa-cog"></i> Settings</a>
+            </div>
+        </nav>
+
+        <!-- Main Content Area (Wraps your original container) -->
+        <div id="main-content" class="main-content">
+
+            <!-- Open Sidebar Button -->
+            <button id="open-sidebar-btn" class="sidebar-toggle open-btn" aria-label="Open sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+
+            <!-- Your Original Chat Container -->
+            <div class="container">
+                 <header class="header">
+                     <!-- Use Tailwind classes OR the classes defined in chat.css -->
+                    <h1 class="/*text-sm mt-1*/" id="persona-name"># New Chat</h1>
+                    <h2 class="/*text-sm opacity-75*/">Powered by Gemini API</h2>
+                 </header>
+                 <div class="chat-box">
+                     <div id="chat-messages" class="chat-messages">
+                        <!-- Initial Bot Message Example -->
+                        <div class="message bot-message" style="opacity: 1; transform: none; background-color: #ffffe0; color: #333; max-width: 80%; border-radius: 8px; align-self: center; text-align: center; margin-top: 20px;">With who, in what language and about what would you like to talk about?</div>
+                     </div>
+                     <div class="chat-input">
+                         <form id="chat-form" class="input-container">
+                             <div class="input-wrapper">
+                                 <textarea id="user-input" class="input-field" placeholder="Type your message..."></textarea>
+                             </div>
+                             <button type="submit" id="send-button" class="send-btn" aria-label="Send"></button>
+                         </form>
+                     </div>
+                 </div>
+            </div> <!-- End .container -->
+
+        </div> <!-- End main-content -->
+
+    </div> <!-- End app-container -->
+
+    <script src="{{ url_for('static', filename='js/chat.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
 </body>
-<script src="{{ url_for('static', filename='js/chat.js') }}"></script>
 </html>

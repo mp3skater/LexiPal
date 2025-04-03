@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexipal Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login-register.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/headerFooter.css') }}">
+</head>
+<body>
+{% include 'components/header.html' %}
+
+<div class="glass-container">
+    <div class="login-box">
+        <!-- Login heading that is hidden when forgot password or confirmation are shown -->
+        <h2 id="login-header">Login</h2>
+
+        <!-- Login Form -->
+        <form action="#" method="POST" id="login-form">
+            <div class="input-container">
+                <input type="text" id="username" name="username" required placeholder=" ">
+                <label for="username">Username or Email address</label>
+            </div>
+            <div class="input-container">
+                <input type="password" id="password" name="password" required placeholder=" " minlength="8">
+                <label for="password">Password</label>
+            </div>
+            <div class="options">
+                <input type="checkbox" id="remember" name="remember">
+                <label for="remember">Remember me</label>
+                <a href="javascript:void(0);" onclick="showForgotPassword()">Forgot Password?</a>
+            </div>
+            <button type="submit">Login</button>
+            <p>Don't have an account? <a href="/register" id="register">Register</a></p>
+        </form>
+
+        <!-- Forgot Password Form -->
+        <form action="javascript:void(0);" method="POST" id="forgot-password-form" style="display:none;">
+            <h2>Reset Password</h2>
+            <div class="input-container">
+                <input type="email" id="forgot-email" name="email" required placeholder=" " onfocus="resetLabelColor()">
+                <label for="forgot-email">Enter your email address</label>
+            </div>
+            <button type="button" onclick="showConfirmationMessage()">Send Reset Link</button>
+            <p><a href="javascript:void(0);" onclick="showLogin()">Back to Login</a></p>
+        </form>
+
+        <!-- Confirmation Message -->
+        <div id="confirmation-message" style="display:none;">
+            <h1 style="color: rgba(3,96,19,0.44)">Email Sent!</h1>
+            <p>We have sent a password reset link to your email address. Please check your inbox.</p>
+            <p><a href="javascript:void(0);" onclick="showLogin()">Back to Login</a></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script>
+    // Function to toggle between login and forgot password form
+    function showForgotPassword() {
+        document.getElementById('login-form').style.display = 'none';  // Hide login form
+        document.getElementById('forgot-password-form').style.display = 'block';  // Show forgot password form
+        document.getElementById('confirmation-message').style.display = 'none';  // Hide confirmation message
+        document.getElementById('login-header').style.display = 'none';  // Hide login heading
+    }
+
+    function showLogin() {
+        document.getElementById('login-form').style.display = 'block';  // Show login form
+        document.getElementById('forgot-password-form').style.display = 'none';  // Hide forgot password form
+        document.getElementById('confirmation-message').style.display = 'none';  // Hide confirmation message
+        document.getElementById('login-header').style.display = 'block';  // Show login heading
+    }
+
+    function showConfirmationMessage() {
+        var emailInput = document.getElementById('forgot-email');
+        var emailLabel = emailInput.nextElementSibling;
+        var email = emailInput.value.trim();
+
+        if (email === "") {
+            emailInput.style.borderColor = "red";  // Change border to red if email is empty
+            emailLabel.style.color = "red";  // Change label to red if email is empty
+        } else {
+            document.getElementById('forgot-password-form').style.display = 'none';  // Hide forgot password form
+            document.getElementById('confirmation-message').style.display = 'block';  // Show confirmation message
+            document.getElementById('login-header').style.display = 'none';  // Hide login heading
+            emailInput.style.borderColor = "";  // Reset border color when email is valid
+            emailLabel.style.color = "#013101";  // Change label to green when email is valid
+        }
+    }
+
+    // Reset label color to green when clicked or has text
+    function resetLabelColor() {
+        var emailInput = document.getElementById('forgot-email');
+        var emailLabel = emailInput.nextElementSibling;
+        emailInput.style.borderColor = "#ffffff";  // Set border color to green when clicked
+        emailLabel.style.color = "#4caf50";  // Set label color to green when clicked
+    }
+</script>
