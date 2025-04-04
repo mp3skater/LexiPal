@@ -5,21 +5,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const openBtn = document.getElementById('open-sidebar-btn');
     const closeBtn = document.getElementById('close-sidebar-btn');
     const mainContent = document.getElementById('main-content');
-    const chatMessagesContainer = document.getElementById('chat-messages');
+    const chatMessages = document.getElementById('chat-messages');
     const chatInput = document.getElementById('user-input');
-    const chatForm = document.getElementById('chat-form');
     const personaName = document.getElementById('persona-name');
     const newChatBtn = document.getElementById('new-chat-btn');
 
     // Function to open the sidebar
     function openSidebar() {
         if (sidebar && mainContent && openBtn) {
+            loadChatHistory();
             sidebar.classList.add('open');
             mainContent.classList.add('shifted');
-            // openBtn.style.opacity = '0'; // Faster visual feedback
-            // openBtn.style.pointerEvents = 'none';
             localStorage.setItem('sidebarState', 'open');
-            if(closeBtn) closeBtn.focus(); // Focus inside sidebar
+            if (closeBtn) closeBtn.focus();
         }
     }
 
@@ -28,10 +26,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sidebar && mainContent && openBtn) {
             sidebar.classList.remove('open');
             mainContent.classList.remove('shifted');
-             // openBtn.style.opacity = '1'; // Faster visual feedback
-             // openBtn.style.pointerEvents = 'auto';
             localStorage.setItem('sidebarState', 'closed');
-             if(openBtn) openBtn.focus(); // Focus back on open button
+            if (openBtn) openBtn.focus();
         }
     }
 
@@ -45,74 +41,115 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (closeBtn) {
         closeBtn.addEventListener('click', (event) => {
-             event.stopPropagation();
+            event.stopPropagation();
             closeSidebar();
         });
     }
 
-    // Close sidebar if clicked outside (on main content area)
+    // Close sidebar if clicked outside
     if (mainContent) {
         mainContent.addEventListener('click', (event) => {
-            // Check if sidebar is open and the click is not on the sidebar itself or the open button
-            if (sidebar && sidebar.classList.contains('open') && !sidebar.contains(event.target) && !openBtn.contains(event.target)) {
-                 // Option: Only close on mobile? Example: if (window.innerWidth < 768)
-                 closeSidebar();
+            if (sidebar && sidebar.classList.contains('open') &&
+                !sidebar.contains(event.target) &&
+                !openBtn.contains(event.target)) {
+                closeSidebar();
             }
         });
     }
 
-    // Close sidebar with the Escape key
+    // Close sidebar with Escape key
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && sidebar && sidebar.classList.contains('open')) {
             closeSidebar();
         }
     });
 
-    // Check initial state from localStorage
+    // Check initial sidebar state
     const savedState = localStorage.getItem('sidebarState');
     if (savedState === 'open' && sidebar && mainContent && openBtn) {
-        // Apply state directly without animation for initial load
         sidebar.style.transition = 'none';
         mainContent.style.transition = 'none';
-       // openBtn.style.transition = 'none'; // Disable transition initially
-
         sidebar.classList.add('open');
         mainContent.classList.add('shifted');
-       // openBtn.style.opacity = '0';
-       // openBtn.style.pointerEvents = 'none';
-
-        // Force reflow/repaint before re-enabling transitions
-        void sidebar.offsetWidth;
-
+        void sidebar.offsetWidth; // Force reflow
         sidebar.style.transition = '';
         mainContent.style.transition = '';
-       // openBtn.style.transition = ''; // Re-enable transition
     }
 
-
-    // --- Textarea Auto-Resize Logic (include if not in chat.js) ---
+    // Textarea auto-resize logic
     if (chatInput) {
         const initialHeight = chatInput.scrollHeight;
-        const maxHeight = 150; // Match CSS max-height
+        const maxHeight = 150;
 
         const adjustTextareaHeight = () => {
-             chatInput.style.height = 'auto'; // Temporarily shrink
+            chatInput.style.height = 'auto';
             let newHeight = chatInput.scrollHeight;
-
-            if (newHeight > maxHeight) {
-                newHeight = maxHeight;
-                chatInput.style.overflowY = 'auto';
-            } else {
-                chatInput.style.overflowY = 'hidden';
-            }
-            chatInput.style.height = `${newHeight}px`;
+            chatInput.style.overflowY = newHeight > maxHeight ? 'auto' : 'hidden';
+            chatInput.style.height = `${Math.min(newHeight, maxHeight)}px`;
         };
 
         chatInput.addEventListener('input', adjustTextareaHeight);
-
-        // Initial adjustment
-        chatInput.style.overflowY = 'hidden'; // Start hidden
-        adjustTextareaHeight(); // Run once on load
+        adjustTextareaHeight();
     }
 
-});
+    // Chat history functions
+    async function loadChatHistory() {
+        try {
+            const response = await fetch('/api/chats', {
+                credentials: 'include'
+            });
+            const chats = await response.json();
+            renderChatHistory(chats);
+        } catch (error) {
+            console.error('Failed to load chat history:', error);
+        }
+    }
+
+    function renderChatHistory(chats) {
+        const historyList = document.getElementById('chat-history-list');
+        historyList.innerHTML = chats.map(chat => `
+            <li data-chat-id="${chat.conversation_id}" class="chat-item">
+                <div class="persona">${chat.persona}</div>
+                <div class="timestamp">${new Date(chat.created_at).toLocaleDateString()}</div>
+                <div class="preview">${chat.preview}</div>
+            </li>
+        `).join('');
+
+        document.querySelectorAll('.chat-item').forEach(item => {
+            item.addEventListener('click', async (e) => {
+                e.preventDefault();
+                await loadChat(item.dataset.chatId);
+                closeSidebar();
+            });
+        });
+    }
+
+    async function loadChat(conversationId) {
+        try {
+            const response = await fetch(`/api/chats/${conversationId}`, {
+                credentials: 'include'
+            });
+            const chat = await response.json();
+
+            // Reset chat interface
+            chatMessages.innerHTML = '';
+            window.conversationId = conversationId;
+            window.isNewConversation = false;
+
+            // Restore history
+            chat.history.forEach(message => {
+                addMessage(message.user, 'user');
+                addMessage(message.bot, 'bot');
+            });
+
+            // Update persona name
+            if (personaName) {
+                personaName.textContent = chat.persona;
+            }
+        } catch (error) {
+            console.error('Failed to load chat:', error);
+            alert('Failed to load chat: ' + error.message);
+        }
+    }
+
+}); // End of DOMContentLoaded

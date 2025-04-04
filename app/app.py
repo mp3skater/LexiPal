@@ -1,4 +1,5 @@
 import os
+from datetime import datetime
 from flask import Flask, request, jsonify, render_template
 from flask_cors import CORS
 from threading import Lock
@@ -35,17 +36,32 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-class User(UserMixin,db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(60), nullable=False)
     name = db.Column(db.String(60), nullable=False)
     google_api_key = db.Column(db.String(100))
     google_pro_api_key = db.Column(db.String(100))
-    past_chats = db.Column(db.JSON, default=list)
+    chats = db.relationship('Chat', backref='user', lazy=True)
 
-    def __repr__(self):
-        return f"User('{self.email}', '{self.name}')"
+class Chat(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    conversation_id = db.Column(db.String(36), unique=True, nullable=False)
+    persona = db.Column(db.String(100))
+    history = db.Column(db.JSON)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    last_updated = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'conversation_id': self.conversation_id,
+            'persona': self.persona,
+            'created_at': self.created_at.isoformat(),
+            'last_updated': self.last_updated.isoformat(),
+            'history': self.history
+        }
 
 # Apply logging decorator if enabled
 ask_questions = logger.log_questions(ask_questions)
@@ -58,6 +74,26 @@ GOOGLE_API_KEY = os.getenv("GEMINI_PRO_API") or os.getenv("GEMINI_API")
 # Server-side conversation storage and locks
 conversations = {}
 conversation_locks = defaultdict(Lock)
+
+@app.route('/api/chats')
+@login_required
+def get_chats():
+    chats = Chat.query.filter_by(user_id=current_user.id).order_by(Chat.last_updated.desc()).all()
+    return jsonify([{
+        'conversation_id': chat.conversation_id,
+        'persona': chat.persona,
+        'created_at': chat.created_at.isoformat(),
+        'preview': chat.history[-1]['user'] if chat.history else 'New chat'
+    } for chat in chats])
+
+@app.route('/api/chats/<conversation_id>')
+@login_required
+def get_chat(conversation_id):
+    chat = Chat.query.filter_by(
+        conversation_id=conversation_id,
+        user_id=current_user.id
+    ).first_or_404()
+    return jsonify(chat.to_dict())
 
 @app.route('/languages')
 def languages():
@@ -80,6 +116,7 @@ def chat_interface():
     return render_template('chat.html')
 
 @app.route('/start', methods=['POST'])
+@login_required
 def start_chat():
     try:
         data = request.json
@@ -115,10 +152,21 @@ def start_chat():
                 'history': []
             }
 
-        return jsonify({
-            'response': answers[1],
-            'persona': answers[0]
-        })
+            # Create new chat in database
+            new_chat = Chat(
+                user_id=current_user.id,
+                conversation_id=conversation_id,
+                persona=answers[0],
+                history=[]
+            )
+            db.session.add(new_chat)
+            db.session.commit()
+
+            return jsonify({
+                'response': answers[1],
+                'persona': answers[0],
+                'conversation_id': conversation_id
+            })
 
     except Exception as e:
         return jsonify({'response': f'Chat initialization failed: {str(e)}'}), 500
@@ -173,6 +221,12 @@ def chat():
         if not user_message:
             return jsonify({'response': 'Empty message'}), 400
 
+        # Get chat from database
+        chat = Chat.query.filter_by(
+            conversation_id=conversation_id,
+            user_id=current_user.id
+        ).first_or_404()
+
         with conversation_locks[conversation_id]:
             conversation = conversations.get(conversation_id)
             if not conversation or not conversation.get('active'):
@@ -207,6 +261,10 @@ def chat():
                 'user': user_message,
                 'bot': answers[0]
             })
+
+            # Update chat history
+            chat.history = conversation['history']
+            db.session.commit()
 
         return jsonify({
             'response': answers[0],

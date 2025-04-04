@@ -27,19 +27,15 @@ async function handleSubmit(e) {
         });
 
         const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.response || 'Request failed');
+        if (!response.ok) throw new Error(data.response || 'Request failed');
+
+        // Update conversation ID for new chats
+        if (!isChatInitialized && data.conversation_id) {
+            conversationId = data.conversation_id;
         }
-
-        addMessage(data.response, 'bot');
-
         // Add language review if available
         if (data.review) {
             addReviewMessage(data.review);
-        }
-
-        if (!isChatInitialized) {
-            isChatInitialized = true;
         }
 
         // Update persona name if it's a new conversation
@@ -59,6 +55,16 @@ async function handleSubmit(e) {
         }
     }
 }
+
+// Add new chat button handler
+document.getElementById('new-chat-btn').addEventListener('click', () => {
+    conversationId = crypto.randomUUID();
+    isNewConversation = true;
+    isChatInitialized = false;
+    chatMessages.innerHTML = '';
+    document.getElementById('persona-name').textContent = '# New Chat';
+    closeSidebar();
+});
 
 function addMessage(text, sender) {
     const messageDiv = document.createElement('div');
