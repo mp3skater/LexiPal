@@ -10,19 +10,35 @@
 <body>
 {% include 'components/header.html' %}
 
-
 <div class="glass-container">
     <div class="register-box">
         <h2>Register</h2>
-        <form action="#" method="POST">
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form action="/register" method="POST">
+            <!-- Full Name Field -->
             <div class="input-container">
-                <input type="text" id="username" name="username" required placeholder=" ">
-                <label for="username">Username</label>
+                <input type="text" id="name" name="name" required placeholder=" ">
+                <label for="name">Full Name</label>
             </div>
+
+            <!-- Email Field -->
             <div class="input-container">
                 <input type="email" id="email" name="email" required placeholder=" ">
                 <label for="email">Email</label>
             </div>
+
+            <!-- Password Fields -->
             <div class="input-container">
                 <input type="password" id="password" name="password" required placeholder=" " minlength="8">
                 <label for="password">Password</label>
@@ -31,6 +47,17 @@
                 <input type="password" id="confirm-password" name="confirm-password" required placeholder=" " minlength="8">
                 <label for="confirm-password">Confirm Password</label>
             </div>
+
+            <!-- API Key Fields -->
+            <div class="input-container">
+                <input type="text" id="google-api-key" name="google_api_key" placeholder=" ">
+                <label for="google-api-key">Google API Key (optional)</label>
+            </div>
+            <div class="input-container">
+                <input type="text" id="google-pro-api-key" name="google_pro_api_key" placeholder=" ">
+                <label for="google-pro-api-key">Google Pro API Key (optional)</label>
+            </div>
+
             <button type="submit">Register</button>
             <p>Already have an account? <a href="/login" id="login">Login</a></p>
         </form>

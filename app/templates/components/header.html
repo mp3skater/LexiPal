@@ -14,11 +14,21 @@
     </nav>
 
     <div class="right-section">
-        <div class="settings">
-            <button class="icon-button"><i class="fas fa-cog"></i></button>
-            <button class="icon-button"><i class="fas fa-user"></i></button>
-            <button class="icon-button"><i class="fas fa-question-circle"></i></button>
-        </div>
-        <button class="login-button" onclick="window.location.href = '/login';">Login</button>
+        {% if current_user.is_authenticated %}
+            <div class="user-menu">
+                <button class="icon-button"><i class="fas fa-user"></i></button>
+                <div class="dropdown-content">
+                    <a href="/profile">Profile</a>
+                    <a href="/settings">Settings</a>
+                    <a href="/logout">Logout</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="settings">
+                <button class="icon-button"><i class="fas fa-cog"></i></button>
+                <button class="icon-button"><i class="fas fa-question-circle"></i></button>
+            </div>
+            <button class="login-button" onclick="window.location.href = '/login';">Login</button>
+        {% endif %}
     </div>
 </header>

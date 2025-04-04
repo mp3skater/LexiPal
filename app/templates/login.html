@@ -6,20 +6,49 @@
     <title>Lexipal Login</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/login-register.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/headerFooter.css') }}">
+    <style>
+        .alert {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-size: 0.9em;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+    </style>
 </head>
 <body>
 {% include 'components/header.html' %}
 
 <div class="glass-container">
     <div class="login-box">
-        <!-- Login heading that is hidden when forgot password or confirmation are shown -->
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Login heading -->
         <h2 id="login-header">Login</h2>
 
         <!-- Login Form -->
-        <form action="#" method="POST" id="login-form">
+        <form action="/login" method="POST" id="login-form">
             <div class="input-container">
-                <input type="text" id="username" name="username" required placeholder=" ">
-                <label for="username">Username or Email address</label>
+                <input type="email" id="email" name="email" required placeholder=" ">
+                <label for="email">Email address</label>
             </div>
             <div class="input-container">
                 <input type="password" id="password" name="password" required placeholder=" " minlength="8">
@@ -35,13 +64,13 @@
         </form>
 
         <!-- Forgot Password Form -->
-        <form action="javascript:void(0);" method="POST" id="forgot-password-form" style="display:none;">
+        <form action="/forgot-password" method="POST" id="forgot-password-form" style="display:none;">
             <h2>Reset Password</h2>
             <div class="input-container">
                 <input type="email" id="forgot-email" name="email" required placeholder=" " onfocus="resetLabelColor()">
                 <label for="forgot-email">Enter your email address</label>
             </div>
-            <button type="button" onclick="showConfirmationMessage()">Send Reset Link</button>
+            <button type="submit">Send Reset Link</button>
             <p><a href="javascript:void(0);" onclick="showLogin()">Back to Login</a></p>
         </form>
 
@@ -58,17 +87,17 @@
 <script>
     // Function to toggle between login and forgot password form
     function showForgotPassword() {
-        document.getElementById('login-form').style.display = 'none';  // Hide login form
-        document.getElementById('forgot-password-form').style.display = 'block';  // Show forgot password form
-        document.getElementById('confirmation-message').style.display = 'none';  // Hide confirmation message
-        document.getElementById('login-header').style.display = 'none';  // Hide login heading
+        document.getElementById('login-form').style.display = 'none';
+        document.getElementById('forgot-password-form').style.display = 'block';
+        document.getElementById('confirmation-message').style.display = 'none';
+        document.getElementById('login-header').style.display = 'none';
     }
 
     function showLogin() {
-        document.getElementById('login-form').style.display = 'block';  // Show login form
-        document.getElementById('forgot-password-form').style.display = 'none';  // Hide forgot password form
-        document.getElementById('confirmation-message').style.display = 'none';  // Hide confirmation message
-        document.getElementById('login-header').style.display = 'block';  // Show login heading
+        document.getElementById('login-form').style.display = 'block';
+        document.getElementById('forgot-password-form').style.display = 'none';
+        document.getElementById('confirmation-message').style.display = 'none';
+        document.getElementById('login-header').style.display = 'block';
     }
 
     function showConfirmationMessage() {
@@ -77,22 +106,21 @@
         var email = emailInput.value.trim();
 
         if (email === "") {
-            emailInput.style.borderColor = "red";  // Change border to red if email is empty
-            emailLabel.style.color = "red";  // Change label to red if email is empty
+            emailInput.style.borderColor = "red";
+            emailLabel.style.color = "red";
         } else {
-            document.getElementById('forgot-password-form').style.display = 'none';  // Hide forgot password form
-            document.getElementById('confirmation-message').style.display = 'block';  // Show confirmation message
-            document.getElementById('login-header').style.display = 'none';  // Hide login heading
-            emailInput.style.borderColor = "";  // Reset border color when email is valid
-            emailLabel.style.color = "#013101";  // Change label to green when email is valid
+            document.getElementById('forgot-password-form').style.display = 'none';
+            document.getElementById('confirmation-message').style.display = 'block';
+            document.getElementById('login-header').style.display = 'none';
+            emailInput.style.borderColor = "";
+            emailLabel.style.color = "#013101";
         }
     }
 
-    // Reset label color to green when clicked or has text
     function resetLabelColor() {
         var emailInput = document.getElementById('forgot-email');
         var emailLabel = emailInput.nextElementSibling;
-        emailInput.style.borderColor = "#ffffff";  // Set border color to green when clicked
-        emailLabel.style.color = "#4caf50";  // Set label color to green when clicked
+        emailInput.style.borderColor = "#ffffff";
+        emailLabel.style.color = "#4caf50";
     }
 </script>

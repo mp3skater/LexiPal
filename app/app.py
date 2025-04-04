@@ -5,11 +5,51 @@ from threading import Lock
 from collections import defaultdict
 from utils.multiple_questions_handler.handler import ask_questions
 from utils.logging_handler.handler import logger
+from flask_sqlalchemy import SQLAlchemy
+from flask_bcrypt import Bcrypt
+from flask_mail import Mail, Message
+from flask import flash, redirect, url_for
+from flask_login import LoginManager, UserMixin, login_user, logout_user, current_user, login_required
+
+
+app = Flask(__name__)
+# Add these configurations
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///site.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.environ.get('EMAIL_USER')
+app.config['MAIL_PASSWORD'] = os.environ.get('EMAIL_PASSWORD')
+
+db = SQLAlchemy(app)
+bcrypt = Bcrypt(app)
+mail = Mail(app)
+
+# Initialize Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+class User(UserMixin,db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)
+    name = db.Column(db.String(60), nullable=False)
+    google_api_key = db.Column(db.String(100))
+    google_pro_api_key = db.Column(db.String(100))
+    past_chats = db.Column(db.JSON, default=list)
+
+    def __repr__(self):
+        return f"User('{self.email}', '{self.name}')"
 
 # Apply logging decorator if enabled
 ask_questions = logger.log_questions(ask_questions)
 
-app = Flask(__name__)
 CORS(app, supports_credentials=True)
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-secret-key')
 
@@ -19,9 +59,6 @@ GOOGLE_API_KEY = os.getenv("GEMINI_PRO_API") or os.getenv("GEMINI_API")
 conversations = {}
 conversation_locks = defaultdict(Lock)
 
-@app.route('/login')
-def login():
-    return render_template('login.html')
 @app.route('/languages')
 def languages():
     return render_template('languages.html')
@@ -33,10 +70,6 @@ def features():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
-
-@app.route('/register')
-def register():
-    return render_template('register.html')
 
 @app.route('/')
 def home():
@@ -89,6 +122,44 @@ def start_chat():
 
     except Exception as e:
         return jsonify({'response': f'Chat initialization failed: {str(e)}'}), 500
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        remember = request.form.get('remember') == 'on'
+
+        user = User.query.filter_by(email=email).first()
+
+        if user and bcrypt.check_password_hash(user.password, password):
+            login_user(user, remember=remember)
+            next_page = request.args.get('next')
+            return redirect(next_page) if next_page else redirect(url_for('home'))
+        else:
+            flash('Invalid email or password', 'danger')
+
+    return render_template('login.html')
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
+
+@app.route('/forgot-password', methods=['POST'])
+def forgot_password():
+    email = request.form.get('email')
+    user = User.query.filter_by(email=email).first()
+
+    if user:
+        # Add password reset logic here
+        flash('Password reset link sent to your email', 'success')
+    else:
+        flash('No account found with that email', 'danger')
+
+    return redirect(url_for('login'))
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -147,5 +218,72 @@ def chat():
         return jsonify({'response': f'Chat error: {str(e)}'}), 500
 
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        # Get form data
+        email = request.form.get('email')
+        name = request.form.get('name')
+        password = request.form.get('password')
+        confirm_password = request.form.get('confirm-password')
+        google_api_key = request.form.get('google_api_key')
+        google_pro_api_key = request.form.get('google_pro_api_key')
+
+        # Validation
+        if not all([email, name, password, confirm_password]):
+            flash('Please fill in all required fields', 'danger')
+            return redirect(url_for('register'))
+        if password != confirm_password:
+            flash('Passwords do not match', 'danger')
+            return redirect(url_for('register'))
+
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash('Email already registered', 'danger')
+            return redirect(url_for('register'))
+
+        # Hash password
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+        # Create user
+        new_user = User(
+            email=email,
+            name=name,
+            password=hashed_password,
+            google_api_key=google_api_key,
+            google_pro_api_key=google_pro_api_key
+        )
+        db.session.add(new_user)
+        db.session.commit()
+
+        # Send welcome email
+        send_welcome_email(new_user)
+
+        flash('Account created successfully! Please login.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
+
+
+def send_welcome_email(user):
+    return
+    msg = Message('Welcome to Lexipal',
+                  sender='noreply@lexipal.com',
+                  recipients=[user.email])
+    msg.body = f'''Hi {user.name},
+
+Welcome to Lexipal! Your account has been successfully created.
+
+Features:
+- Store multiple API keys
+- Access chat history
+- Language learning tools
+
+Happy learning!'''
+    mail.send(msg)
+
+
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run(port=5000, debug=True)
