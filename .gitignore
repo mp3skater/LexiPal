@@ -3,3 +3,4 @@
 .env
 /libs/
 __pycache__
+/instance/
