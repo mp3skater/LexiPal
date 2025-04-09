@@ -250,56 +250,85 @@
         border-color: white;
       }
 
+      /* FAQs section */
+      .faq-section {
+        margin: 80px auto;
+      }
 
+      .accordions {
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .accordion {
+        margin-bottom: 16px;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        overflow: hidden;
+        background-color: white; /* Added for consistency */
+        transition: box-shadow 0.3s ease; /* Add transition for hover */
+      }
+      .accordion:hover {
+         box-shadow: 0 2px 8px rgba(0,0,0,0.05); /* Subtle hover effect */
+      }
+
+      .accordion-header {
+        background: transparent; /* Inherit from .accordion */
+        padding: 20px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .accordion-title {
+        font-weight: 600;
+        color: #111827;
+      }
+
+      .accordion-icon {
+        transition: transform 0.3s ease;
+        color: #6B7280; /* Ensure icon color */
+      }
+       .accordion-icon svg { /* Target SVG directly */
+          width: 16px;
+          height: 16px;
+          stroke: currentColor; /* Use parent color */
+      }
+
+
+      .accordion.active .accordion-icon {
+        transform: rotate(180deg);
+      }
+
+      .accordion-content {
+        background: #F9FAFB;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease-out, padding 0.3s ease-out; /* Smoother transition */
+         padding: 0 20px; /* Add padding transition */
+      }
+
+      .accordion.active .accordion-content {
+        max-height: 300px; /* Adjust if needed */
+         padding: 20px; /* Apply padding when active */
+      }
+
+      .accordion-body {
+        /* Padding is now handled by .accordion-content */
+        color: #4B5563;
+      }
+
+      /* Call to action */
       .cta {
         background: white;
         border-radius: 16px;
         padding: 48px;
         text-align: center;
-        margin: 80px auto; /* Adjusted margin since FAQ is removed */
+        margin-bottom: 80px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
         border: 1px solid #E5E7EB;
       }
-
-       /* General Button Styles (retained for CTA) */
-       .button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 8px 16px;
-        border-radius: 6px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-decoration: none;
-        border: none;
-      }
-
-      .button-primary {
-        background: #22c55e;
-        color: white;
-      }
-
-      .button-primary:hover {
-        background: #16a34a;
-      }
-
-      .button-outline {
-        background: transparent;
-        color: #22c55e;
-        border: 1px solid #D1D5DB;
-      }
-
-      .button-outline:hover {
-        background: rgba(34, 197, 94, 0.05);
-      }
-
-      .button-large {
-        padding: 12px 32px;
-        font-size: 16px;
-      }
-      /* End Button Styles */
-
 
       .cta-title {
         font-size: 32px;
@@ -324,6 +353,11 @@
        .cta-buttons .button svg { /* Style SVGs inside CTA buttons */
         margin-left: 8px;
       }
+
+
+      /* --- REMOVED HEADER AND FOOTER STYLES --- */
+      /* Styles for header, nav, logo, nav-links, footer, footer-content, copyright */
+      /* are now expected to be in headerFooter.css */
 
 
       /* Responsive */
@@ -358,7 +392,10 @@
           flex-direction: column;
           gap: 12px;
         }
-        /* Removed responsive styles related to FAQ */
+
+        /* --- REMOVED HEADER/FOOTER RESPONSIVE STYLES --- */
+        /* Responsive styles for header/footer are now expected */
+        /* to be in headerFooter.css */
       }
        /* --- End CSS Styles --- */
     </style>
@@ -408,6 +445,19 @@
           <!-- Features will be dynamically populated -->
         </div>
       </section>
+
+      <!-- FAQ Section -->
+      <section class="faq-section">
+        <h2 class="section-title">Frequently Asked Questions</h2>
+        <p class="section-subtitle">
+          Got questions about LexiPal? Find quick answers to common questions below.
+        </p>
+
+        <div class="accordions" id="faq-accordions">
+          <!-- FAQs will be dynamically populated -->
+        </div>
+      </section>
+
     </main>
 
     {% include 'components/footer.html' %}
@@ -433,11 +483,17 @@
           { icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.2 8.4c.5.38.8.97.8 1.6v10a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V10a2 2 0 0 1 2-2h3.8a2 2 0 0 0 1.4-.6L12 4.8a2 2 0 0 1 1.4-.6h3.8a2 2 0 0 1 2 2v2.2Z"></path></svg>', title: 'Personalized Learning Paths', description: 'Receive customized learning recommendations based on your progress, goals, and learning style. LexiPal adapts to your needs, focusing on areas where you need the most improvement.' }
         ];
 
+        const faqsData = [
+          { question: "How does LexiPal's AI conversation work?", answer: "LexiPal uses advanced natural language processing to understand what you say or type, then responds in a natural, conversational way in your target language. The AI adjusts to your proficiency level, gradually introducing new vocabulary and more complex sentence structures as you improve." },
+          { question: "Is LexiPal really 100% free?", answer: "Yes, the current prototype version of LexiPal is completely free to use. All core features are available without any paywalls or restrictions. In the future, we may introduce premium features while maintaining free access to the basic functionality." },
+          { question: "Which languages does LexiPal currently support?", answer: "LexiPal currently supports Spanish, French, German, English, Japanese, Italian, Portuguese, Russian, and Mandarin Chinese. We're actively working to add more languages based on user feedback and demand." },
+          { question: "Can LexiPal help complete beginners?", answer: "Absolutely! LexiPal is designed to support learners at all levels, from complete beginners to advanced speakers. For beginners, LexiPal will start with simple phrases, basic vocabulary, and slow, clear pronunciation to help you build a solid foundation." }
+        ];
+
         // --- DOM Element Getters ---
         const currentFeaturesContainer = document.getElementById('current-features');
         const futureFeaturesContainer = document.getElementById('future-features');
-        // --- REMOVED faqContainer ---
-        // const faqContainer = document.getElementById('faq-accordions');
+        const faqContainer = document.getElementById('faq-accordions');
         const characterAvatars = document.querySelectorAll('.character-avatar');
         const allFeatureCards = document.querySelectorAll('.feature-card'); // Select all initially for scroll animation setup
 
@@ -452,10 +508,26 @@
           `;
         }
 
+        function createFAQAccordionHTML(faq) {
+            // Ensure SVG stroke is controllable via CSS
+            return `
+            <div class="accordion-header">
+              <div class="accordion-title">${faq.question}</div>
+              <div class="accordion-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="m6 9 6 6 6-6"/>
+                </svg>
+              </div>
+            </div>
+            <div class="accordion-content">
+              <div class="accordion-body">${faq.answer}</div>
+            </div>
+          `;
+        }
+
         // --- Content Population Functions ---
         function populateFeatures(container, features, tagClass, tagText) {
           if (!container) return;
-          container.innerHTML = ''; // Clear container before populating
           features.forEach((feature, index) => {
             const featureCard = document.createElement('div');
             featureCard.className = 'feature-card'; // Start hidden for animation
@@ -464,11 +536,42 @@
             // Animation is now handled by the scroll listener
           });
         }
-        function setupAvatarHover() {
-          // Ensure characterAvatars exist before adding listeners
-          const demoSection = document.querySelector('.demo-section'); // Check if demo section exists
-          if (!demoSection || !characterAvatars || characterAvatars.length === 0) return;
 
+        function populateFAQs(container, faqs) {
+          if (!container) return;
+          faqs.forEach(faq => {
+            const accordion = document.createElement('div');
+            accordion.className = 'accordion';
+            accordion.innerHTML = createFAQAccordionHTML(faq);
+            container.appendChild(accordion);
+          });
+        }
+
+        // --- Event Listener Setup Functions ---
+        function setupFAQInteractions() {
+          if (!faqContainer) return;
+          // Use event delegation for performance
+          faqContainer.addEventListener('click', function(event) {
+             const header = event.target.closest('.accordion-header');
+             if (header) {
+               const accordion = header.parentElement;
+                // Optional: Close other accordions when one opens
+                /*
+                if (!accordion.classList.contains('active')) {
+                    faqContainer.querySelectorAll('.accordion.active').forEach(activeAccordion => {
+                        if (activeAccordion !== accordion) {
+                            activeAccordion.classList.remove('active');
+                        }
+                    });
+                }
+                */
+               accordion.classList.toggle('active');
+             }
+          });
+        }
+
+        function setupAvatarHover() {
+          if (!characterAvatars.length) return;
           characterAvatars.forEach(avatar => {
             avatar.addEventListener('mouseenter', function() {
               characterAvatars.forEach(a => {
@@ -486,7 +589,7 @@
 
         function setupScrollAnimations() {
             const cardsToAnimate = document.querySelectorAll('.feature-card'); // Select cards *after* they've been added
-            if (!cardsToAnimate || cardsToAnimate.length === 0) return;
+            if (!cardsToAnimate.length) return;
 
             const observerOptions = {
                 root: null, // relative to document viewport
@@ -498,9 +601,7 @@
                 entries.forEach((entry, index) => {
                     if (entry.isIntersecting) {
                         // Apply animation with a delay based on index or position
-                        // Calculate delay based only on visible cards at the time
-                        const visibleCards = Array.from(cardsToAnimate).filter(card => card.classList.contains('active'));
-                        const delay = (visibleCards.length % 4) * 100; // Stagger in groups of 4 approx
+                        const delay = (index % cardsToAnimate.length) * 100; // Simple staggered delay
                         setTimeout(() => {
                             entry.target.classList.add('active');
                         }, delay);
@@ -520,7 +621,9 @@
         // --- Initialization ---
         populateFeatures(currentFeaturesContainer, currentFeaturesData, 'tag-current', 'Available Now');
         populateFeatures(futureFeaturesContainer, futureFeaturesData, 'tag-future', 'Coming Soon');
+        populateFAQs(faqContainer, faqsData);
 
+        setupFAQInteractions();
         setupAvatarHover();
         // Call scroll setup *after* elements are populated
         setupScrollAnimations();

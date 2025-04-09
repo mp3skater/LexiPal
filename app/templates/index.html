@@ -57,34 +57,27 @@
                 </div>
             </div>
         </section>
-        <section class="cta-section">
-            <h2 class="cta-heading">Try it now for free</h2>
-            <p class="cta-description">
-              Start your journey with LexiPal today and experience the future of conversational AI without any cost or commitment.
-            </p>
-            <button class="cta-button" id="chatNowButton" onclick="window.location.href = '/chat';">Chat Now</button>
-          </section>
     </main>
 
     {% include 'components/footer.html' %}
 
 </div>
 </body>
-<!--<script>-->
-<!--let lastScrollY = window.scrollY;-->
-<!--const header = document.getElementById("main-header");-->
+<script>
+let lastScrollY = window.scrollY;
+const header = document.getElementById("main-header");
 
-<!--window.addEventListener("scroll", () => {-->
-<!--if (window.scrollY > lastScrollY) {-->
-<!--// Scrolling Down → Hide Header-->
-<!--header.classList.add("header-hidden");-->
-<!--} else {-->
-<!--// Scrolling Up → Show Header-->
-<!--header.classList.remove("header-hidden");-->
-<!--}-->
-<!--lastScrollY = window.scrollY;-->
-<!--});-->
-<!--</script>-->
+window.addEventListener("scroll", () => {
+if (window.scrollY > lastScrollY) {
+// Scrolling Down → Hide Header
+header.classList.add("header-hidden");
+} else {
+// Scrolling Up → Show Header
+header.classList.remove("header-hidden");
+}
+lastScrollY = window.scrollY;
+});
+</script>
 <script>
 document.querySelectorAll('.info-box').forEach(box => {
 box.addEventListener('mousemove', function(e) {
